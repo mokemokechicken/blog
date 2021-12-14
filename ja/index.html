@@ -18,6 +18,7 @@
 <link rel=dns-prefetch href=//fonts.gstatic.com>
 <link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
 <link rel=stylesheet href=/css/style.css>
+<link rel=stylesheet href=/css/my-style.css>
 <link rel=alternate type=application/rss+xml href=/ja/index.xml title="My First Step">
 <link rel="shortcut icon" href=/favicon.ico>
 </head>
@@ -38,13 +39,28 @@
 <div class="wrapper flex">
 <div class=primary>
 <main class="main list" role=main>
-<div class=warning><svg class="warning__icon icon icon-files" width="96" height="96" viewBox="0 0 384 384"><path d="m368 64H144h-16v16 288 16h16 224 16v-16V80 64zm-16 288H160V96h192zM32 32h192v16h32V16 0h-16H16 0v16 288 16h16 96v-32H32zm144 272h160v-32H176zm0-64h160v-32H176zm0-64h160v-32H176zM48 240h64v-32H48zm0-64h64v-32H48zm0-64h64V80H48z"/></svg>
-<h3 class=warning__headline>まだ何も投稿していません！</h3>
-<div class=warning__text>
-<p class=warning__description><b>content</b> 以下のどこかのディレクトリに投稿を追加するとここに表示されます。デフォルトでは（最も投稿の多い）１つのセクション だけがメインページに表示されます。</p>
-<p class=warning__tip><b>ヒント:</b> 設定のパラメーター <b><a href=https://gohugo.io/functions/where/#mainsections rel="nofollow noopener" target=_blank>mainSections</a></b> を使って好きな数だけセクションを表示させることもできます。</p>
+<article class="list__item post">
+<header class=list__header>
+<h2 class="list__title post__title">
+<a href=/ja/tech/start_blog_with_hugo/ rel=bookmark>
+Hugo で ブログ を始める
+</a>
+</h2>
+<p class="list__lead post__lead">無料で広告を貼り付けられるブログサイトを始めたい</p>
+<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2021-12-13T00:00:00Z>2021-12-13</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2 1 2h8v11H0V2z"/></svg><span class=meta__text><a class=meta__link href=/ja/categories/install-setting/ rel=category>Install & Setting</a>
+</span>
 </div>
+<div class="meta__item-translations meta__item">
+<span class=meta__text>翻訳: <a class=meta__link href=/en/tech/start_blog_with_hugo/>EN</a>
+</span>
+</div></div>
+</header>
+<div class="content list__excerpt post__content clearfix">
+現時点である程度PCに詳しい人が広告を貼り付けられるブログを無料(or 低価格)で始めるにはどうしたらいいのか、を検討しました
 </div>
+</article>
 </main>
 </div>
 <aside class=sidebar><div class="widget-search widget">
@@ -55,6 +71,21 @@
 <input class=widget-search__submit type=submit value=Search>
 <input type=hidden name=sitesearch value=https://blog.my-first-step.info/>
 </form>
+</div>
+<div class="widget-categories widget">
+<h4 class=widget__title>カテゴリー</h4>
+<div class=widget__content>
+<ul class=widget__list>
+<li class=widget__item>
+<a class=widget__link href=/ja/categories/install-setting/>Install & Setting</a></li>
+</ul>
+</div>
+</div>
+<div class="widget-taglist widget">
+<h4 class=widget__title>タグ</h4>
+<div class=widget__content>
+<a class="widget-taglist__link widget__link btn" href=/ja/tags/hugo/ title=Hugo>Hugo</a>
+</div>
 </div>
 <div class="widget-languages widget">
 <h4 class=widget__title>言語</h4>
