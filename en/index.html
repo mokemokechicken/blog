@@ -60,7 +60,8 @@ AWS CDK(v2): Enabling Lambda to read SystemManager's parameter store
 </div></div>
 </header>
 <div class="content list__excerpt post__content clearfix">
-AWS CDK(v2): A note on making SystemManager&rsquo;s parameter store readable from Lambda
+If you want to use key information from outside AWS in Lambda, there is a way to pass it via the SystemManager parameter store. You can also pass it as an environment variable, but if you want to make it a bit more secure, this way seems to be better. You can easily specify the permissions to Lambda in the CDK.
+HowTo Stack side On the Stack side, do grantRead() while passing the parameter name that you want to allow Lambda to read as an environment variable such as KEY_NAME.
 </div>
 </article><article class="list__item post">
 <header class=list__header>
@@ -81,7 +82,9 @@ AWS CDK(v2): Execute Lambda by Cron
 </div></div>
 </header>
 <div class="content list__excerpt post__content clearfix">
-A note on using AWS CDK(v2) to execute Lambda with Cron
+Using CDK, you can easily schedule Lambda to run using EventBridge. We will use the so-called cron method to describe the schedule.
+One thing to be a little careful about is that a rule can be triggered multiple times in response to a single event. (From Official Troubleshooting). If you can manage that, it is very easy and useful.
+HowTo For example, if you want to call myLambda every 10 minutes, you can write it as follows.
 </div>
 </article><article class="list__item post">
 <header class=list__header>
@@ -102,7 +105,7 @@ AWS CDK(v2): Basic Settings
 </div></div>
 </header>
 <div class="content list__excerpt post__content clearfix">
-A note on common basic settings when using AWS CDK(v2)
+AWS CDK v2 is a tool that enables you to create and modify AWS infrastructure configurations by writing them in a programming language. At first, it was a snap to do from the web admin console, but as it becomes more and more difficult to do the same thing over and over again (quickly and without mistakes and without getting frustrated), this kind of standardized system is useful once you get used to it.
 </div>
 </article><article class="list__item post">
 <header class=list__header>
@@ -123,7 +126,8 @@ AWS CDK(v2): Linking Lambda and APIGateway
 </div></div>
 </header>
 <div class="content list__excerpt post__content clearfix">
-A note on using AWS CDK V2 to link Lambda and APIGateway
+I think that Lambda and APIGateway are a combination that is often used, but is complicated to set up in the management console. It would be great to be able to write this easily. Also, if you write Lambda in TypeScript, it automatically transpiles the TypeScript and installs node modules and packages them for you, so it&rsquo;s quite easy to use.
+Preparation It is assumed that the following settings have been completed.
 </div>
 </article><article class="list__item post">
 <header class=list__header>
