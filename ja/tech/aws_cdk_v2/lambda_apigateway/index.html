@@ -15,7 +15,7 @@
 <meta itemprop=name content="AWS CDK(v2): Lambda と APIGateway を連携させる">
 <meta itemprop=description content="AWS CDK(v2)で Lambda と APIGateway を連携させるメモ"><meta itemprop=datePublished content="2021-12-20T00:00:00+00:00">
 <meta itemprop=dateModified content="2021-12-20T00:00:00+00:00">
-<meta itemprop=wordCount content="1563">
+<meta itemprop=wordCount content="1571">
 <meta itemprop=keywords content="AWS CDK v2,TypeScript,AWSLambda,APIGateway,">
 <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
 <link rel=dns-prefetch href=//fonts.googleapis.com>
@@ -103,7 +103,8 @@
 % cd cow_say
 % cdk init --language typescript
 </code></pre></div><p><code>lib/cow_say-stack.ts</code> に <code>CowSayStack</code> 用のファイルが作られるので、最終的にはここに色々書いていきます。</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts:lib/cow_say-stack.ts data-lang=ts:lib/cow_say-stack.ts><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Stack</span>, <span style=color:#a6e22e>StackProps</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;aws-cdk-lib&#39;</span>;
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>/// lib/cow_say-stack.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Stack</span>, <span style=color:#a6e22e>StackProps</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;aws-cdk-lib&#39;</span>;
 <span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Construct</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;constructs&#39;</span>;
 <span style=color:#75715e>// import * as sqs from &#39;aws-cdk-lib/aws-sqs&#39;;
 </span><span style=color:#75715e></span>
@@ -126,7 +127,8 @@
 </code></pre></div><p>LambdaのHandlerファイルはどこに置いても良いのですが、 <code>lib/lambda/main.ts</code> に書くとします。
 コード自体はシンプルです。
 API Gatewayからの <code>GET</code>リクエストの QueryStringパラメータの <code>text</code>の値を <code>cowsay</code> で変換して そのまま返すというものになります。</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts:lib/lambda/main.ts data-lang=ts:lib/lambda/main.ts><span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>cowsay</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;cowsay&#39;</span>;
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>/// lib/lambda/main.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>cowsay</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;cowsay&#39;</span>;
 
 <span style=color:#66d9ef>export</span> <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>handler</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>event</span>: <span style=color:#66d9ef>any</span> <span style=color:#f92672>=</span> {})<span style=color:#f92672>:</span> <span style=color:#a6e22e>Promise</span>&lt;<span style=color:#f92672>any</span>&gt; <span style=color:#f92672>=&gt;</span> {
     <span style=color:#66d9ef>try</span> {
@@ -141,7 +143,8 @@ API Gatewayからの <code>GET</code>リクエストの QueryStringパラメー�
 };
 </code></pre></div><h4 id=unittest>UnitTest</h4>
 <p>Lambdaのテストの良い書き方はわからなかったですが、最初から <code>jest</code> が入っているので例えば以下のようにするとUnitTestを実行できます。</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts:test/lambda/main.test.ts data-lang=ts:test/lambda/main.test.ts><span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>main</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;../../lib/lambda/main&#39;</span>;
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>/// test/lambda/main.test.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>main</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;../../lib/lambda/main&#39;</span>;
 
 <span style=color:#a6e22e>test</span>(<span style=color:#e6db74>&#34;call handler&#34;</span>, <span style=color:#66d9ef>async</span>() <span style=color:#f92672>=&gt;</span> {
     <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>event</span> <span style=color:#f92672>=</span> {
@@ -164,7 +167,8 @@ VSCodeだとクリックするだけで特定のテストを実行できます�
 <h3 id=stack構成を記述する>Stack構成を記述する</h3>
 <p>今回は、APIGateway から Lambdaを呼べれば良いので以下のように書けばOKです。
 ポイントは <a href=https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_lambda_nodejs.NodejsFunction.html>NodejsFunction</a> というNodeJS用のを使うと、TypeScriptのTranspile や node moduleも含めたパッケージ化をよしなにやってくれるというところです。</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts:cow_say-stack.ts data-lang=ts:cow_say-stack.ts><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Stack</span>, <span style=color:#a6e22e>StackProps</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;aws-cdk-lib&#39;</span>;
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>/// lib/cow_say-stack.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Stack</span>, <span style=color:#a6e22e>StackProps</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;aws-cdk-lib&#39;</span>;
 <span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>LambdaIntegration</span>, <span style=color:#a6e22e>RestApi</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;aws-cdk-lib/aws-apigateway&#39;</span>;
 <span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>NodejsFunction</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;aws-cdk-lib/aws-lambda-nodejs&#39;</span>;
 <span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Construct</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;constructs&#39;</span>;
@@ -201,8 +205,9 @@ VSCodeだとクリックするだけで特定のテストを実行できます�
 <code>/var/vows/default.cow</code> というファイルが無い、と。
 importでエラーが出ているわけではないのでどうやら <code>cowsay</code> のJSファイルはパッケージに含まれているが、<code>default.cow</code> というリソースファイルが含まれていないようです。</p>
 <p>そこで <code>bundling.nodeModules</code> Optionで、<code>cowsay</code> を追加してみます。</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts:cow_say-stack.ts data-lang=ts:cow_say-stack.ts>    <span style=color:#75715e>// ... 
-</span><span style=color:#75715e></span>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>/// lib/cow_say-stack.ts
+</span><span style=color:#75715e></span>...
+
     <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>cowLambda</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>NodejsFunction</span>(<span style=color:#66d9ef>this</span>, <span style=color:#e6db74>&#34;CowSay&#34;</span>, {
       <span style=color:#a6e22e>entry</span>: <span style=color:#66d9ef>path.join</span>(<span style=color:#a6e22e>__dirname</span>, <span style=color:#e6db74>&#39;./lambda/main.ts&#39;</span>),
       <span style=color:#a6e22e>handler</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;handler&#34;</span>,
@@ -212,8 +217,8 @@ importでエラーが出ているわけではないのでどうやら <code>cows
       }
     });
 
-    <span style=color:#75715e>// ...
-</span></code></pre></div><p>もう一度デプロイします。Lambda Functionだけ更新したい場合は <code>--hotswap</code> というOptionをつけると高速に更新できます。
+...
+</code></pre></div><p>もう一度デプロイします。Lambda Functionだけ更新したい場合は <code>--hotswap</code> というOptionをつけると高速に更新できます。
 ただし、あまり動作保証しないので、開発環境とかだけにしなさいと書かれています。</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cdk deploy --hotswap
 </code></pre></div><p>もう一度、<code>curl</code> でアクセスしてみます。</p>

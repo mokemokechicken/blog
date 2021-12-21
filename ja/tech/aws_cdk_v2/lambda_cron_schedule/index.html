@@ -1,0 +1,141 @@
+<!doctype html><html class=no-js lang=ja>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title>AWS CDK(v2): Lambda を Cron実行する - My First Step</title>
+<script>(function(a,b){a[b]=a[b].replace("no-js","js")})(document.documentElement,"className")</script>
+<meta name=description content="AWS CDK(v2)を使って Lambda を Cron実行するメモです">
+<meta property="og:title" content="AWS CDK(v2): Lambda を Cron実行する">
+<meta property="og:description" content="AWS CDK(v2)を使って Lambda を Cron実行するメモです">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://blog.my-first-step.info/ja/tech/aws_cdk_v2/lambda_cron_schedule/"><meta property="article:section" content="tech">
+<meta property="article:published_time" content="2021-12-21T00:00:00+00:00">
+<meta property="article:modified_time" content="2021-12-21T00:00:00+00:00"><meta property="og:site_name" content="My First Step">
+<meta itemprop=name content="AWS CDK(v2): Lambda を Cron実行する">
+<meta itemprop=description content="AWS CDK(v2)を使って Lambda を Cron実行するメモです"><meta itemprop=datePublished content="2021-12-21T00:00:00+00:00">
+<meta itemprop=dateModified content="2021-12-21T00:00:00+00:00">
+<meta itemprop=wordCount content="312">
+<meta itemprop=keywords content="AWS CDK v2,TypeScript,AWSLambda,EventBridge,cron,">
+<link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+<link rel=dns-prefetch href=//fonts.googleapis.com>
+<link rel=dns-prefetch href=//fonts.gstatic.com>
+<link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+<link rel=stylesheet href=/css/style.css>
+<link rel=stylesheet href=/css/my-style.css>
+<link rel="shortcut icon" href=/favicon.ico>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M2QWEH7EHT"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-M2QWEH7EHT',{anonymize_ip:!1})}</script>
+</head>
+<body class=body>
+<div class="container container--outer">
+<header class=header>
+<div class="container header__container">
+<div class=logo>
+<a class=logo__link href=/ja/ title="My First Step" rel=home>
+<div class="logo__item logo__text">
+<div class=logo__title>My First Step</div>
+</div>
+</a>
+</div>
+<div class=divider></div>
+</div>
+</header>
+<div class="wrapper flex">
+<div class=primary>
+<main class=main role=main>
+<article class=post>
+<header class=post__header>
+<h1 class=post__title>AWS CDK(v2): Lambda を Cron実行する</h1>
+<p class=post__lead>AWS CDK(v2)を使って Lambda を Cron実行するメモ</p>
+<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2021-12-21T00:00:00Z>2021-12-21</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2 1 2h8v11H0V2z"/></svg><span class=meta__text><a class=meta__link href=/ja/categories/aws-cdk-v2/ rel=category>AWS CDK v2</a>
+</span>
+</div>
+<div class="meta__item-translations meta__item">
+<span class=meta__text>翻訳: <a class=meta__link href=/en/tech/aws_cdk_v2/lambda_cron_schedule/>EN</a>
+</span>
+</div></div>
+</header>
+<div class="content post__content clearfix">
+<p>CDKを使うと、LambdaとEventBridgeを使って簡単にスケジュール実行をすることができます。
+スケジュールの表記にはいわゆる cron方式 を使います。</p>
+<p>ちょっと注意が必要なのは「1つのイベントに応じてルールが複数回トリガーされることがある」ということです
+(<a href=https://docs.aws.amazon.com/ja_jp/eventbridge/latest/userguide/eb-troubleshooting.html#eb-rule-triggered-more-than-once>公式トラブルシューティングより</a>)。
+そこさえなんとかできれば、非常にお手軽で便利です。</p>
+<h2 id=書き方>書き方</h2>
+<p>例えば、以下のような <code>myLambda</code> を 10分毎に呼び出す場合以下のように書くことができます。
+<code>{path: "/call"}</code> の部分で Lambda に渡す event の内容を指定できます。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>/// lib/xyz-stack.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>export</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>XyzStack</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Stack</span> {
+  <span style=color:#66d9ef>constructor</span>(<span style=color:#a6e22e>scope</span>: <span style=color:#66d9ef>Construct</span>, <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>string</span>, <span style=color:#a6e22e>props?</span>: <span style=color:#66d9ef>StackProps</span>) {
+    <span style=color:#66d9ef>super</span>(<span style=color:#a6e22e>scope</span>, <span style=color:#a6e22e>id</span>, <span style=color:#a6e22e>props</span>);
+...
+
+    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>myLambda</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>NodejsFunction</span>(<span style=color:#66d9ef>this</span>, <span style=color:#e6db74>&#34;MyAwesomeFunction&#34;</span>, {
+      <span style=color:#a6e22e>entry</span>: <span style=color:#66d9ef>path.join</span>(<span style=color:#a6e22e>__dirname</span>, <span style=color:#e6db74>&#39;./lambda/main.ts&#39;</span>),
+      <span style=color:#a6e22e>handler</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;handler&#34;</span>,
+    });
+
+    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>rule</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Rule</span>(<span style=color:#66d9ef>this</span>, <span style=color:#e6db74>&#34;CallMyLambda&#34;</span>, {
+      <span style=color:#a6e22e>schedule</span>: <span style=color:#66d9ef>Schedule.cron</span>({
+        <span style=color:#a6e22e>year</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;*&#34;</span>,
+        <span style=color:#a6e22e>month</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;*&#34;</span>,
+        <span style=color:#a6e22e>day</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;*&#34;</span>,
+        <span style=color:#a6e22e>hour</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;*&#34;</span>,
+        <span style=color:#a6e22e>minute</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;*/10&#34;</span>,
+      }),
+      <span style=color:#a6e22e>targets</span><span style=color:#f92672>:</span> [<span style=color:#66d9ef>new</span> <span style=color:#a6e22e>LambdaFunction</span>(<span style=color:#a6e22e>myLambda</span>, {
+        <span style=color:#a6e22e>event</span>: <span style=color:#66d9ef>RuleTargetInput.fromObject</span>({<span style=color:#a6e22e>path</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;/call&#34;</span>}), <span style=color:#75715e>// specify an object to pass the lambda handler.
+</span><span style=color:#75715e></span>      })],
+    });
+
+...    
+}    
+</code></pre></div><h2 id=reference>Reference</h2>
+<ul>
+<li><a href=https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_events.Rule.html>Rule</a></li>
+<li><a href=https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_events.Schedule.html>Schedule</a></li>
+</ul>
+</div>
+<footer class=post__footer>
+<div class="post__tags tags clearfix"><svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5.0 11V3C0 1.5.8.8.8.8S1.5.0 3 0h8c1.5.0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 100-6 3 3 0 000 6z"/></svg>
+<ul class=tags__list>
+<li class=tags__item>
+<a class="tags__link btn" href=/ja/tags/aws-cdk-v2/ rel=tag>AWS CDK v2</a>
+</li>
+<li class=tags__item>
+<a class="tags__link btn" href=/ja/tags/typescript/ rel=tag>TypeScript</a>
+</li>
+<li class=tags__item>
+<a class="tags__link btn" href=/ja/tags/awslambda/ rel=tag>AWSLambda</a>
+</li>
+<li class=tags__item>
+<a class="tags__link btn" href=/ja/tags/eventbridge/ rel=tag>EventBridge</a>
+</li>
+<li class=tags__item>
+<a class="tags__link btn" href=/ja/tags/cron/ rel=tag>cron</a>
+</li>
+</ul>
+</div>
+</footer>
+</article>
+</main>
+</div>
+</div>
+<footer class=footer>
+<div class="container footer__container flex">
+<div class=footer__links>
+<a class=footer__link href=/ja/etc/my_first_step/>このBlogについて</a>
+</div>
+<div class=footer__copyright>
+&copy; 2021 Mokemokechicken.
+<span class=footer__copyright-credits>このサイトは <a href=https://gohugo.io/ rel="nofollow noopener" target=_blank>Hugo</a> と <a href=https://github.com/Vimux/Mainroad/ rel="nofollow noopener" target=_blank>Mainroad</a> テーマで生成されています。</span>
+</div>
+</div>
+</footer>
+</div>
+<script async defer src=/js/menu.js></script>
+</body>
+</html>

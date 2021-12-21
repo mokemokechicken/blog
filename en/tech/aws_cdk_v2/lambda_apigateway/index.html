@@ -15,7 +15,7 @@
 <meta itemprop=name content="AWS CDK(v2): Linking Lambda and APIGateway">
 <meta itemprop=description content="A note on using AWS CDK V2 to link Lambda and APIGateway"><meta itemprop=datePublished content="2021-12-20T00:00:00+00:00">
 <meta itemprop=dateModified content="2021-12-20T00:00:00+00:00">
-<meta itemprop=wordCount content="820">
+<meta itemprop=wordCount content="828">
 <meta itemprop=keywords content="AWS CDK v2,TypeScript,AWSLambda,APIGateway,">
 <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
 <link rel=dns-prefetch href=//fonts.googleapis.com>
@@ -103,7 +103,8 @@ This will create the various typescript.</p>
 % cd cow_say
 % cdk init --language typescript
 </code></pre></div><p>A file for <code>CowSayStack</code> will be created in <code>lib/cow_say-stack.ts</code>, and you can write various things here in the end.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts:lib/cow_say-stack.ts data-lang=ts:lib/cow_say-stack.ts><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Stack</span>, <span style=color:#a6e22e>StackProps</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;aws-cdk-lib&#39;</span>;
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>/// lib/cow_say-stack.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Stack</span>, <span style=color:#a6e22e>StackProps</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;aws-cdk-lib&#39;</span>;
 <span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Construct</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;constructs&#39;</span>;
 <span style=color:#75715e>// import * as sqs from &#39;aws-cdk-lib/aws-sqs&#39;;
 </span><span style=color:#75715e></span>
@@ -126,7 +127,8 @@ This will create the various typescript.</p>
 </code></pre></div><p>You can put the Lambda Handler file anywhere you want. Let&rsquo;s put it in <code>lib/lambda/main.ts</code> in this time.
 The code itself is simple.
 It converts the <code>text</code> value of the QueryString parameter of a <code>GET</code> request from API Gateway with <code>cowsay</code> and returns it as is.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts:lib/lambda/main.ts data-lang=ts:lib/lambda/main.ts><span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>cowsay</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;cowsay&#39;</span>;
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>/// lib/lambda/main.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>cowsay</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;cowsay&#39;</span>;
 
 <span style=color:#66d9ef>export</span> <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>handler</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>event</span>: <span style=color:#66d9ef>any</span> <span style=color:#f92672>=</span> {})<span style=color:#f92672>:</span> <span style=color:#a6e22e>Promise</span>&lt;<span style=color:#f92672>any</span>&gt; <span style=color:#f92672>=&gt;</span> {
     <span style=color:#66d9ef>try</span> {
@@ -141,7 +143,8 @@ It converts the <code>text</code> value of the QueryString parameter of a <code>
 };
 </code></pre></div><h4 id=unittest>UnitTest</h4>
 <p>I didn&rsquo;t know how to write good tests for Lambda, but since <code>jest</code> is included from the beginning, for example, you can run UnitTest by doing the following</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts:test/lambda/main.test.ts data-lang=ts:test/lambda/main.test.ts><span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>main</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;../../lib/lambda/main&#39;</span>;
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>/// test/lambda/main.test.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>main</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;../../lib/lambda/main&#39;</span>;
 
 <span style=color:#a6e22e>test</span>(<span style=color:#e6db74>&#34;call handler&#34;</span>, <span style=color:#66d9ef>async</span>() <span style=color:#f92672>=&gt;</span> {
     <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>event</span> <span style=color:#f92672>=</span> {
@@ -164,7 +167,8 @@ With VSCode, you can run a specific test with just a click.</p>
 <h3 id=write-stack-configuration>Write Stack Configuration</h3>
 <p>In this case, we just need to be able to call Lambda from the APIGateway, so we can write it as follows.
 The point is to use <a href=https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_lambda_nodejs.NodejsFunction.html>NodejsFunction</a> for NodeJS. It will take care of the packaging including TypeScript Transpile and node module.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts:cow_say-stack.ts data-lang=ts:cow_say-stack.ts><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Stack</span>, <span style=color:#a6e22e>StackProps</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;aws-cdk-lib&#39;</span>;
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>/// lib/cow_say-stack.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Stack</span>, <span style=color:#a6e22e>StackProps</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;aws-cdk-lib&#39;</span>;
 <span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>LambdaIntegration</span>, <span style=color:#a6e22e>RestApi</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;aws-cdk-lib/aws-apigateway&#39;</span>;
 <span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>NodejsFunction</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;aws-cdk-lib/aws-lambda-nodejs&#39;</span>;
 <span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Construct</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;constructs&#39;</span>;
@@ -201,8 +205,9 @@ The point is to use <a href=https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-
 It said that the file <code>/var/vows/default.cow</code> was missing.
 Apparently, the JS file of <code>cowsay</code> is included in the package, but the resource file <code>default.cow</code> is not included, because there is no error in import.</p>
 <p>So let&rsquo;s add <code>cowsay</code> in the <code>bundling.nodeModules</code> option.</p>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts:cow_say-stack.ts data-lang=ts:cow_say-stack.ts>    <span style=color:#75715e>// ... 
-</span><span style=color:#75715e></span>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>/// lib/cow_say-stack.ts
+</span><span style=color:#75715e></span>...
+
     <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>cowLambda</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>NodejsFunction</span>(<span style=color:#66d9ef>this</span>, <span style=color:#e6db74>&#34;CowSay&#34;</span>, {
       <span style=color:#a6e22e>entry</span>: <span style=color:#66d9ef>path.join</span>(<span style=color:#a6e22e>__dirname</span>, <span style=color:#e6db74>&#39;./lambda/main.ts&#39;</span>),
       <span style=color:#a6e22e>handler</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;handler&#34;</span>,
@@ -212,8 +217,8 @@ Apparently, the JS file of <code>cowsay</code> is included in the package, but t
       }
     });
 
-    <span style=color:#75715e>// ...
-</span></code></pre></div><p>If you want to update only the Lambda function, you can add the <code>--hotswap</code> option to speed up the update, but it is not guaranteed to work, so it is recommended to use it only in development environments.</p>
+...
+</code></pre></div><p>If you want to update only the Lambda function, you can add the <code>--hotswap</code> option to speed up the update, but it is not guaranteed to work, so it is recommended to use it only in development environments.</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>cdk deploy --hotswap
 </code></pre></div><p>Again, try to access it with <code>curl</code>.</p>
 <pre tabindex=0><code>% curl &quot;https://umh9ezyai2.execute-api.ap-northeast-1.amazonaws.com/prod/?text=Hey&quot;
