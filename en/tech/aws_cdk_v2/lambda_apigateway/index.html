@@ -15,7 +15,7 @@
 <meta itemprop=name content="AWS CDK(v2): Linking Lambda and APIGateway">
 <meta itemprop=description content="A note on using AWS CDK V2 to link Lambda and APIGateway"><meta itemprop=datePublished content="2021-12-20T00:00:00+00:00">
 <meta itemprop=dateModified content="2021-12-20T00:00:00+00:00">
-<meta itemprop=wordCount content="828">
+<meta itemprop=wordCount content="835">
 <meta itemprop=keywords content="AWS CDK v2,TypeScript,AWSLambda,APIGateway,">
 <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
 <link rel=dns-prefetch href=//fonts.googleapis.com>
@@ -63,7 +63,11 @@
 <div class=toc__menu>
 <nav id=TableOfContents>
 <ul>
-<li><a href=#preparation>Preparation</a></li>
+<li><a href=#preparation>Preparation</a>
+<ul>
+<li><a href=#version>Version</a></li>
+</ul>
+</li>
 <li><a href=#cowsay-sample-application>Cowsay Sample Application</a>
 <ul>
 <li><a href=#setup-cdk>Setup CDK</a></li>
@@ -85,6 +89,12 @@ Also, if you write Lambda in TypeScript, it automatically transpiles the TypeScr
 <p>It is assumed that the following settings have been completed.</p>
 <ul>
 <li><a href=/en/tech/aws_cdk_v2/first_step/>AWS CDK v2: Basic Settings</a></li>
+</ul>
+<h3 id=version>Version</h3>
+<ul>
+<li><code>node</code>: <code>16.13.1</code></li>
+<li><code>aws-cdk</code>: <code>2.2.0</code></li>
+<li><code>tsc</code>: <code>4.5.4</code></li>
 </ul>
 <h2 id=cowsay-sample-application>Cowsay Sample Application</h2>
 <p>Using npm <code>cowsay</code>, I&rsquo;m going to try to create an application that returns a requested string as text spoken by a cow.</p>

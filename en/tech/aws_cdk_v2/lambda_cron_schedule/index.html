@@ -15,7 +15,7 @@
 <meta itemprop=name content="AWS CDK(v2): Execute Lambda by Cron">
 <meta itemprop=description content="A note on using AWS CDK(v2) to execute Lambda with Cron"><meta itemprop=datePublished content="2021-12-21T00:00:00+00:00">
 <meta itemprop=dateModified content="2021-12-21T00:00:00+00:00">
-<meta itemprop=wordCount content="169">
+<meta itemprop=wordCount content="176">
 <meta itemprop=keywords content="AWS CDK v2,TypeScript,AWSLambda,EventBridge,cron,">
 <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
 <link rel=dns-prefetch href=//fonts.googleapis.com>
@@ -64,6 +64,12 @@ We will use the so-called cron method to describe the schedule.</p>
 <p>One thing to be a little careful about is that a rule can be triggered multiple times in response to a single event.
 (<a href=https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-troubleshooting.html#eb-rule-triggered-more-than-once>From Official Troubleshooting</a>).
 If you can manage that, it is very easy and useful.</p>
+<h2 id=version>Version</h2>
+<ul>
+<li><code>node</code>: <code>16.13.1</code></li>
+<li><code>aws-cdk</code>: <code>2.2.0</code></li>
+<li><code>tsc</code>: <code>4.5.4</code></li>
+</ul>
 <h2 id=howto>HowTo</h2>
 <p>For example, if you want to call <code>myLambda</code> every 10 minutes, you can write it as follows.
 You can specify the content of the event to be passed to Lambda in the <code>{path:"/call"}</code> part.</p>

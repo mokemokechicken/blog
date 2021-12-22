@@ -15,7 +15,7 @@
 <meta itemprop=name content="AWS CDK(v2): Lambda を Cron実行する">
 <meta itemprop=description content="AWS CDK(v2)を使って Lambda を Cron実行するメモです"><meta itemprop=datePublished content="2021-12-21T00:00:00+00:00">
 <meta itemprop=dateModified content="2021-12-21T00:00:00+00:00">
-<meta itemprop=wordCount content="312">
+<meta itemprop=wordCount content="319">
 <meta itemprop=keywords content="AWS CDK v2,TypeScript,AWSLambda,EventBridge,cron,">
 <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
 <link rel=dns-prefetch href=//fonts.googleapis.com>
@@ -64,6 +64,12 @@
 <p>ちょっと注意が必要なのは「1つのイベントに応じてルールが複数回トリガーされることがある」ということです
 (<a href=https://docs.aws.amazon.com/ja_jp/eventbridge/latest/userguide/eb-troubleshooting.html#eb-rule-triggered-more-than-once>公式トラブルシューティングより</a>)。
 そこさえなんとかできれば、非常にお手軽で便利です。</p>
+<h2 id=version>Version</h2>
+<ul>
+<li><code>node</code>: <code>16.13.1</code></li>
+<li><code>aws-cdk</code>: <code>2.2.0</code></li>
+<li><code>tsc</code>: <code>4.5.4</code></li>
+</ul>
 <h2 id=書き方>書き方</h2>
 <p>例えば、以下のような <code>myLambda</code> を 10分毎に呼び出す場合以下のように書くことができます。
 <code>{path: "/call"}</code> の部分で Lambda に渡す event の内容を指定できます。</p>

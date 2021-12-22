@@ -15,7 +15,7 @@
 <meta itemprop=name content="AWS CDK(v2): Lambda と APIGateway を連携させる">
 <meta itemprop=description content="AWS CDK(v2)で Lambda と APIGateway を連携させるメモ"><meta itemprop=datePublished content="2021-12-20T00:00:00+00:00">
 <meta itemprop=dateModified content="2021-12-20T00:00:00+00:00">
-<meta itemprop=wordCount content="1571">
+<meta itemprop=wordCount content="1578">
 <meta itemprop=keywords content="AWS CDK v2,TypeScript,AWSLambda,APIGateway,">
 <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
 <link rel=dns-prefetch href=//fonts.googleapis.com>
@@ -63,7 +63,11 @@
 <div class=toc__menu>
 <nav id=TableOfContents>
 <ul>
-<li><a href=#事前準備>事前準備</a></li>
+<li><a href=#事前準備>事前準備</a>
+<ul>
+<li><a href=#version>Version</a></li>
+</ul>
+</li>
 <li><a href=#cowsay-サンプルアプリケーション>cowsay サンプルアプリケーション</a>
 <ul>
 <li><a href=#setup-cdk>Setup CDK</a></li>
@@ -85,6 +89,12 @@
 <p>以下の準備がされているものとします。</p>
 <ul>
 <li><a href=/ja/tech/aws_cdk_v2/first_step/>AWS CDK v2: 基本設定</a></li>
+</ul>
+<h3 id=version>Version</h3>
+<ul>
+<li><code>node</code>: <code>16.13.1</code></li>
+<li><code>aws-cdk</code>: <code>2.2.0</code></li>
+<li><code>tsc</code>: <code>4.5.4</code></li>
 </ul>
 <h2 id=cowsay-サンプルアプリケーション>cowsay サンプルアプリケーション</h2>
 <p>npm の <code>cowsay</code> を使って、リクエストされた文字列を牛がしゃべるテキストにして返すアプリケーションを作ってみることにします。</p>
