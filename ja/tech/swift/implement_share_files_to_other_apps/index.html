@@ -15,7 +15,7 @@
 <meta itemprop=name content="SwiftUI で ファイルを外部にShareするには">
 <meta itemprop=description content="SwiftUI で ファイルを外部にShareする方法のメモです"><meta itemprop=datePublished content="2022-01-07T00:00:00+00:00">
 <meta itemprop=dateModified content="2022-01-07T00:00:00+00:00">
-<meta itemprop=wordCount content="757">
+<meta itemprop=wordCount content="761">
 <meta itemprop=keywords content="swift,swiftui,">
 <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
 <link rel=dns-prefetch href=//fonts.googleapis.com>
@@ -60,13 +60,13 @@
 <nav id=TableOfContents>
 <ul>
 <li><a href=#環境>環境</a></li>
-<li><a href=#swiftui-で-uiactivityviewcontroller-を呼び出す方法シンプル版>SwiftUI で UIActivityViewController を呼び出す方法(シンプル版)</a>
+<li><a href=#case1-swiftui-で-uiactivityviewcontroller-を呼び出す方法シンプル版>Case1: SwiftUI で UIActivityViewController を呼び出す方法(シンプル版)</a>
 <ul>
-<li><a href=#uiactivityviewcontroller-を扱う-activityviewcontroller-を作る><code>UIActivityViewController</code> を扱う <code>ActivityViewController</code> を作る</a></li>
-<li><a href=#sheet-を使ってボタンを押したら出現するようにする><code>.sheet</code> を使って、ボタンを押したら出現するようにする</a></li>
+<li><a href=#step1-uiactivityviewcontroller-を扱う-activityviewcontroller-を作る>Step1: <code>UIActivityViewController</code> を扱う <code>ActivityViewController</code> を作る</a></li>
+<li><a href=#step2-sheet-を使ってボタンを押したら出現するようにする>Step2: <code>.sheet</code> を使って、ボタンを押したら出現するようにする</a></li>
 </ul>
 </li>
-<li><a href=#swiftui-で-uiactivityviewcontroller-を呼び出す方法ファイル名を指定したい場合>SwiftUI で UIActivityViewController を呼び出す方法(ファイル名を指定したい場合)</a></li>
+<li><a href=#case2-swiftui-で-uiactivityviewcontroller-を呼び出す方法ファイル名を指定したい場合>Case2: SwiftUI で UIActivityViewController を呼び出す方法(ファイル名を指定したい場合)</a></li>
 <li><a href=#参考>参考</a></li>
 </ul>
 </nav>
@@ -85,9 +85,9 @@
 <li>Xcode: <code>Version 13.2.1 (13C100)</code></li>
 <li>Swift: <code>5.5.2</code></li>
 </ul>
-<h2 id=swiftui-で-uiactivityviewcontroller-を呼び出す方法シンプル版>SwiftUI で UIActivityViewController を呼び出す方法(シンプル版)</h2>
+<h2 id=case1-swiftui-で-uiactivityviewcontroller-を呼び出す方法シンプル版>Case1: SwiftUI で UIActivityViewController を呼び出す方法(シンプル版)</h2>
 <p>SwiftUI から <code>UIActivityViewController</code> を直接は扱えないので、 <code>UIViewControllerRepresentable</code> というのを経由して呼び出すと良いようです。</p>
-<h3 id=uiactivityviewcontroller-を扱う-activityviewcontroller-を作る><code>UIActivityViewController</code> を扱う <code>ActivityViewController</code> を作る</h3>
+<h3 id=step1-uiactivityviewcontroller-を扱う-activityviewcontroller-を作る>Step1: <code>UIActivityViewController</code> を扱う <code>ActivityViewController</code> を作る</h3>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=color:#75715e>// ActivityViewController.swift</span>
 <span style=color:#66d9ef>import</span> <span style=color:#a6e22e>SwiftUI</span>
 
@@ -109,7 +109,7 @@
     <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>updateUIViewController</span>(<span style=color:#66d9ef>_</span> uiViewController: UIActivityViewController, context: UIViewControllerRepresentableContext&lt;<span style=color:#66d9ef>Self</span>&gt;) {}
 }
 </code></pre></div><p><code>completionHandler</code> は、共有が終わったら呼び出されます(今回は使わなかったですが…)。</p>
-<h3 id=sheet-を使ってボタンを押したら出現するようにする><code>.sheet</code> を使って、ボタンを押したら出現するようにする</h3>
+<h3 id=step2-sheet-を使ってボタンを押したら出現するようにする>Step2: <code>.sheet</code> を使って、ボタンを押したら出現するようにする</h3>
 <p>例えば、こんな感じになります。</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>SoundDetailView</span>: View {
     @State <span style=color:#66d9ef>var</span> showingSheet: Bool = <span style=color:#66d9ef>false</span>
@@ -130,7 +130,7 @@
 <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>createFileShareView</span>(<span style=color:#66d9ef>_</span> url: URL) -&gt; some View {
     <span style=color:#66d9ef>return</span> ActivityViewController(activityItems: [url])
 }
-</code></pre></div><h2 id=swiftui-で-uiactivityviewcontroller-を呼び出す方法ファイル名を指定したい場合>SwiftUI で UIActivityViewController を呼び出す方法(ファイル名を指定したい場合)</h2>
+</code></pre></div><h2 id=case2-swiftui-で-uiactivityviewcontroller-を呼び出す方法ファイル名を指定したい場合>Case2: SwiftUI で UIActivityViewController を呼び出す方法(ファイル名を指定したい場合)</h2>
 <p>共有されるときのファイル名を指定したい場合があります。が、APIで指定することはできないようです。
 代わりに、ファイル名がデフォルトの共有ファイル名になるので、事前にコピーして、終わったら削除すれば一応実現できます。
 ちなみに、Symlinkではダメでした。</p>
