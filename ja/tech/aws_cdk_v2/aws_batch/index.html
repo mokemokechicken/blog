@@ -166,7 +166,7 @@ send request failed caused by: Post https://api.ecr....
 </span><span style=color:#75715e></span>    <span style=color:#75715e>///////////////////////////////////////////////////////////////////
 </span><span style=color:#75715e></span>    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>vpc</span>: <span style=color:#66d9ef>IVpc</span>;
 
-    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>VPC_ID</span>) {
+    <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>VPC_ID</span>) {
       <span style=color:#75715e>// VPCを新規作成する場合
 </span><span style=color:#75715e></span>      <span style=color:#a6e22e>vpc</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Vpc</span>(<span style=color:#66d9ef>this</span>, <span style=color:#e6db74>`</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>STACK_BASE_NAME</span><span style=color:#e6db74>}</span><span style=color:#e6db74>VPC`</span>, {
         <span style=color:#a6e22e>cidr</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;10.9.0.0/16&#34;</span>, <span style=color:#75715e>// 172.16.0.0/16 など、なんでも良い。
