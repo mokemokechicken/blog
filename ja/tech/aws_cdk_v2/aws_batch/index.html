@@ -1,0 +1,328 @@
+<!doctype html><html class=no-js lang=ja>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title>AWS CDK(v2): FARGATE_SPOT AWSBatch環境を構築する - My First Step</title>
+<script>(function(a,b){a[b]=a[b].replace("no-js","js")})(document.documentElement,"className")</script>
+<meta name=description content="AWS CDK(v2)で FARGATE_SPOT の AWSBatch環境を構築するメモ">
+<meta property="og:title" content="AWS CDK(v2): FARGATE_SPOT AWSBatch環境を構築する">
+<meta property="og:description" content="AWS CDK(v2)で FARGATE_SPOT の AWSBatch環境を構築するメモ">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://blog.my-first-step.info/ja/tech/aws_cdk_v2/aws_batch/"><meta property="article:section" content="tech">
+<meta property="article:published_time" content="2022-04-18T00:00:00+00:00">
+<meta property="article:modified_time" content="2022-04-18T00:00:00+00:00"><meta property="og:site_name" content="My First Step">
+<meta itemprop=name content="AWS CDK(v2): FARGATE_SPOT AWSBatch環境を構築する">
+<meta itemprop=description content="AWS CDK(v2)で FARGATE_SPOT の AWSBatch環境を構築するメモ"><meta itemprop=datePublished content="2022-04-18T00:00:00+00:00">
+<meta itemprop=dateModified content="2022-04-18T00:00:00+00:00">
+<meta itemprop=wordCount content="1287">
+<meta itemprop=keywords content="AWS CDK v2,TypeScript,AWSBatch,FARGATE_SPOT,">
+<link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+<link rel=dns-prefetch href=//fonts.googleapis.com>
+<link rel=dns-prefetch href=//fonts.gstatic.com>
+<link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+<link rel=stylesheet href=/css/style.css>
+<link rel=stylesheet href=/css/my-style.css>
+<link rel="shortcut icon" href=/favicon.ico>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SV0KGCR6DC"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-SV0KGCR6DC',{anonymize_ip:!1})}</script>
+<script data-ad-client=ca-pub-9110784429846069 async src=https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js></script>
+</head>
+<body class=body>
+<div class="container container--outer">
+<header class=header>
+<div class="container header__container">
+<div class=logo>
+<a class=logo__link href=/ja/ title="My First Step" rel=home>
+<div class="logo__item logo__text">
+<div class=logo__title>My First Step</div>
+</div>
+</a>
+</div>
+<div class=divider></div>
+</div>
+</header>
+<div class="wrapper flex">
+<div class=primary>
+<main class=main role=main>
+<article class=post>
+<header class=post__header>
+<h1 class=post__title>AWS CDK(v2): FARGATE_SPOT AWSBatch環境を構築する</h1>
+<p class=post__lead>AWS CDK V2を使って、FARGATE_SPOT の AWSBatch環境を構築するメモ</p>
+<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2022-04-18T00:00:00Z>2022-04-18</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2 1 2h8v11H0V2z"/></svg><span class=meta__text><a class=meta__link href=/ja/categories/aws-cdk-v2/ rel=category>AWS CDK v2</a>
+</span>
+</div></div>
+</header>
+<div class="post__toc toc">
+<div class=toc__title>目次</div>
+<div class=toc__menu>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#事前準備>事前準備</a>
+<ul>
+<li><a href=#version>Version</a></li>
+</ul>
+</li>
+<li><a href=#ポイント>ポイント</a>
+<ul>
+<li><a href=#computeenvironment-の種類で書き方が変わる>ComputeEnvironment の種類で書き方が変わる</a></li>
+<li><a href=#ecstaskexecutionrole>ecsTaskExecutionRole</a></li>
+<li><a href=#vpc>VPC</a></li>
+<li><a href=#executionrolearn-と-jobrolearn>executionRoleArn と jobRoleArn</a></li>
+<li><a href=#assignpublicip>assignPublicIp</a></li>
+<li><a href=#platformcapabilities>platformCapabilities</a></li>
+</ul>
+</li>
+<li><a href=#コード全体>コード全体</a></li>
+<li><a href=#さいごに>さいごに</a></li>
+</ul>
+</nav>
+</div>
+</div><div class="content post__content clearfix">
+<p>AWSCDK を使って、 FARGATE_SPOT の AWSBatch 環境を構築してみることにします。
+AWSBatch 環境を作るには、まず</p>
+<ul>
+<li>VPC</li>
+<li>ComputeEnvironment</li>
+<li>JobQueue</li>
+</ul>
+<p>が必要で、さらにそれぞれの実行したいタスクの</p>
+<ul>
+<li>JobDefinition</li>
+</ul>
+<p>が必要になってきます。
+あまりこの辺の設定に詳しくなくいろいろ躓いたので、初めて作ったときには 1 日くらいかかりました&mldr;
+まあ次回は 1 時間くらいでできるかな。</p>
+<h2 id=事前準備>事前準備</h2>
+<p>以下の準備がされているものとします。</p>
+<ul>
+<li><a href=/ja/tech/aws_cdk_v2/first_step/>AWS CDK v2: 基本設定</a></li>
+</ul>
+<h3 id=version>Version</h3>
+<ul>
+<li><code>aws-cdk</code>: <code>2.20.0</code></li>
+</ul>
+<h2 id=ポイント>ポイント</h2>
+<p>いくつかポイントを書き残しておきます。</p>
+<h3 id=computeenvironment-の種類で書き方が変わる>ComputeEnvironment の種類で書き方が変わる</h3>
+<p><a href=https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-computeenvironment-computeresources.html>AWS::Batch::ComputeEnvironment ComputeResources</a> にありますが、
+現状 <code>EC2 | FARGATE | FARGATE_SPOT | SPOT</code> の 4 種類あるようです。
+これによって、JobQueue のタイプが変わったり、指定可能 Option や指定必須な Option が変わるようです。</p>
+<p>今回は <code>FARGATE_SPOT</code> の例になります。</p>
+<h3 id=ecstaskexecutionrole>ecsTaskExecutionRole</h3>
+<p>私の場合はいつの間にか作成されていたのですが、ない場合は作る必要があります。
+<a href=https://docs.aws.amazon.com/ja_jp/AmazonECS/latest/developerguide/task_execution_IAM_role.html>https://docs.aws.amazon.com/ja_jp/AmazonECS/latest/developerguide/task_execution_IAM_role.html</a>
+などに説明があります。</p>
+<h3 id=vpc>VPC</h3>
+<p>新規作成するか既存のを使うか、になります。
+両方の書き方を残しておきます。</p>
+<h3 id=executionrolearn-と-jobrolearn>executionRoleArn と jobRoleArn</h3>
+<ul>
+<li><code>executionRoleArn</code> は Batch の実行開始まで(Image の Pull 等)に最低限必要な Role のようです。</li>
+<li><code>jobRoleArn</code> は 更に実行するコンテナが Role を必要なときに指定するようです</li>
+</ul>
+<h3 id=assignpublicip>assignPublicIp</h3>
+<p>これを <code>ENABLED</code> とかにしておかないと、コンテナ Image を Pull できなくてエラーになります。
+しかしその時のエラーメッセージはコンテナが <code>docker.io</code> にある場合は以下のようになり、</p>
+<pre tabindex=0><code>CannotPullContainerError: inspect image has been retried 5 time(s):
+failed to resolve ref &quot;docker.io/library/busybox:latest&quot;: failed to do request:
+Head https://registry-1.docker.io/v2/library/busybox/manifests/latest: dial tcp 54.85.133.123:443: i/o t...
+</code></pre><hr>
+<p>コンテナが ECR にある場合は以下のようになります。</p>
+<pre tabindex=0><code>ResourceInitializationError: unable to pull secrets or registry auth: execution resource retrieval failed:
+unable to retrieve ecr registry auth: service call has been retried 3 time(s): RequestError:
+send request failed caused by: Post https://api.ecr....
+</code></pre><p>なかなかここから原因がわからなくて解決までかなり時間がかかってしまいました。
+※ IAM などの問題かと思ってしまった。</p>
+<h3 id=platformcapabilities>platformCapabilities</h3>
+<p>これを指定しないと、 <code>FARGATE_SPOT</code> タイプの ComputeEnvironment で実行できなくて(JobQueue に入れられない)ハマります。</p>
+<h2 id=コード全体>コード全体</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#75715e>// lib/awsbatch-stack.ts
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>aws_batch</span>, <span style=color:#a6e22e>Stack</span>, <span style=color:#a6e22e>StackProps</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>IVpc</span>, <span style=color:#a6e22e>SecurityGroup</span>, <span style=color:#a6e22e>SubnetType</span>, <span style=color:#a6e22e>Vpc</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib/aws-ec2&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Construct</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;constructs&#34;</span>;
+
+<span style=color:#75715e>// 今回作るStack名
+</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>STACK_BASE_NAME</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;SampelAWSBatch&#34;</span>;
+
+<span style=color:#75715e>// 既存のVPCを使う場合は指定しておく
+</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>VPC_ID</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;vpc-12345678&#34;</span>;
+
+<span style=color:#75715e>// `ecsTaskExecutionRole` がない場合は、以下の手順で作成しておくと良い。
+</span><span style=color:#75715e>// https://docs.aws.amazon.com/ja_jp/AmazonECS/latest/developerguide/task_execution_IAM_role.html
+</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>DEFAULT_EXEC_ROLE_ARN</span> <span style=color:#f92672>=</span>
+  <span style=color:#e6db74>&#34;arn:aws:iam::&lt;&lt;AWS_ACCOUNT_ID&gt;&gt;:role/ecsTaskExecutionRole&#34;</span>;
+
+<span style=color:#66d9ef>export</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>SampleAWSBatchStack</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Stack</span> {
+  <span style=color:#66d9ef>constructor</span>(<span style=color:#a6e22e>scope</span>: <span style=color:#66d9ef>Construct</span>, <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>string</span>, <span style=color:#a6e22e>props?</span>: <span style=color:#66d9ef>StackProps</span>) {
+    <span style=color:#66d9ef>super</span>(<span style=color:#a6e22e>scope</span>, <span style=color:#a6e22e>id</span>, <span style=color:#a6e22e>props</span>);
+
+    <span style=color:#75715e>// https://docs.aws.amazon.com/cdk/api/v1/docs/aws-batch-readme.html
+</span><span style=color:#75715e></span>
+    <span style=color:#75715e>///////////////////////////////////////////////////////////////////
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// Prepare VPC
+</span><span style=color:#75715e></span>    <span style=color:#75715e>///////////////////////////////////////////////////////////////////
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>vpc</span>: <span style=color:#66d9ef>IVpc</span>;
+
+    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>VPC_ID</span>) {
+      <span style=color:#75715e>// VPCを新規作成する場合
+</span><span style=color:#75715e></span>      <span style=color:#a6e22e>vpc</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Vpc</span>(<span style=color:#66d9ef>this</span>, <span style=color:#e6db74>`</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>STACK_BASE_NAME</span><span style=color:#e6db74>}</span><span style=color:#e6db74>VPC`</span>, {
+        <span style=color:#a6e22e>cidr</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;10.9.0.0/16&#34;</span>, <span style=color:#75715e>// 172.16.0.0/16 など、なんでも良い。
+</span><span style=color:#75715e></span>        <span style=color:#a6e22e>subnetConfiguration</span><span style=color:#f92672>:</span> [
+          {
+            <span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>`</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>STACK_BASE_NAME</span><span style=color:#e6db74>}</span><span style=color:#e6db74>Subnet`</span>,
+            <span style=color:#a6e22e>subnetType</span>: <span style=color:#66d9ef>SubnetType.PUBLIC</span>,
+            <span style=color:#a6e22e>cidrMask</span>: <span style=color:#66d9ef>18</span>,
+          },
+        ],
+      });
+    } <span style=color:#66d9ef>else</span> {
+      <span style=color:#75715e>// 既存のVPCを使う場合。
+</span><span style=color:#75715e></span>      <span style=color:#75715e>// `Vpc.fromLookup() ` を使うには
+</span><span style=color:#75715e></span>      <span style=color:#75715e>// `bin/awsbatch.ts` の `env` か cdk実行時の環境変数で region と accountId を明示しておく必要があるようだ。
+</span><span style=color:#75715e></span>      <span style=color:#a6e22e>vpc</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Vpc</span>.<span style=color:#a6e22e>fromLookup</span>(<span style=color:#66d9ef>this</span>, <span style=color:#e6db74>&#34;VPC&#34;</span>, {
+        <span style=color:#a6e22e>vpcId</span>: <span style=color:#66d9ef>VPC_ID</span>,
+      });
+    }
+
+    <span style=color:#75715e>///////////////////////////////////////////////////////////////////
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// Security Group in the VPC
+</span><span style=color:#75715e></span>    <span style=color:#75715e>///////////////////////////////////////////////////////////////////
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>securityGroup</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>SecurityGroup</span>(<span style=color:#66d9ef>this</span>, <span style=color:#e6db74>`</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>STACK_BASE_NAME</span><span style=color:#e6db74>}</span><span style=color:#e6db74>SG`</span>, {
+      <span style=color:#a6e22e>vpc</span>: <span style=color:#66d9ef>vpc</span>,
+    });
+
+    <span style=color:#75715e>///////////////////////////////////////////////////////////////////
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// ComputeEnvironment type=FARGATE_SPOT
+</span><span style=color:#75715e></span>    <span style=color:#75715e>///////////////////////////////////////////////////////////////////
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>fargateSpotEnvironment</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>aws_batch</span>.<span style=color:#a6e22e>CfnComputeEnvironment</span>(
+      <span style=color:#66d9ef>this</span>,
+      <span style=color:#e6db74>`</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>STACK_BASE_NAME</span><span style=color:#e6db74>}</span><span style=color:#e6db74>ComputeEnvironment`</span>,
+      {
+        <span style=color:#66d9ef>type</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;MANAGED&#34;</span>,
+        <span style=color:#a6e22e>computeEnvironmentName</span>: <span style=color:#66d9ef>STACK_BASE_NAME</span>,
+        <span style=color:#a6e22e>computeResources</span><span style=color:#f92672>:</span> {
+          <span style=color:#66d9ef>type</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;FARGATE_SPOT&#34;</span>,
+          <span style=color:#a6e22e>maxvCpus</span>: <span style=color:#66d9ef>64</span>,
+          <span style=color:#a6e22e>subnets</span>: <span style=color:#66d9ef>vpc.publicSubnets.map</span>((<span style=color:#a6e22e>x</span>) <span style=color:#f92672>=&gt;</span> <span style=color:#a6e22e>x</span>.<span style=color:#a6e22e>subnetId</span>), <span style=color:#75715e>// List of SubnetId
+</span><span style=color:#75715e></span>          <span style=color:#a6e22e>securityGroupIds</span><span style=color:#f92672>:</span> [<span style=color:#a6e22e>securityGroup</span>.<span style=color:#a6e22e>securityGroupId</span>],
+        },
+      }
+    );
+
+    <span style=color:#75715e>///////////////////////////////////////////////////////////////////
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// Create JobQueue
+</span><span style=color:#75715e></span>    <span style=color:#75715e>///////////////////////////////////////////////////////////////////
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>jobQueue</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>aws_batch</span>.<span style=color:#a6e22e>CfnJobQueue</span>(
+      <span style=color:#66d9ef>this</span>,
+      <span style=color:#e6db74>`</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>STACK_BASE_NAME</span><span style=color:#e6db74>}</span><span style=color:#e6db74>JobQueue`</span>,
+      {
+        <span style=color:#a6e22e>jobQueueName</span>: <span style=color:#66d9ef>STACK_BASE_NAME</span>,
+        <span style=color:#a6e22e>computeEnvironmentOrder</span><span style=color:#f92672>:</span> [
+          {
+            <span style=color:#a6e22e>computeEnvironment</span>:
+              <span style=color:#66d9ef>fargateSpotEnvironment.attrComputeEnvironmentArn</span>,
+            <span style=color:#a6e22e>order</span>: <span style=color:#66d9ef>1</span>,
+          },
+        ],
+        <span style=color:#a6e22e>priority</span>: <span style=color:#66d9ef>1</span>,
+      }
+    );
+
+    <span style=color:#75715e>///////////////////////////////////////////////////////////////////
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// Create JobDefinitions
+</span><span style=color:#75715e></span>    <span style=color:#75715e>///////////////////////////////////////////////////////////////////
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>jobs</span><span style=color:#f92672>:</span> { [<span style=color:#a6e22e>key</span>: <span style=color:#66d9ef>string</span>]<span style=color:#f92672>:</span> <span style=color:#66d9ef>string</span> } <span style=color:#f92672>=</span> {}; <span style=color:#75715e>// repoUri -&gt; JobDefArn
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>setting</span> <span style=color:#66d9ef>of</span> <span style=color:#a6e22e>CONTAINER_JOB_SETTINGS</span>) {
+      <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>jobDef</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>aws_batch</span>.<span style=color:#a6e22e>CfnJobDefinition</span>(
+        <span style=color:#66d9ef>this</span>,
+        <span style=color:#e6db74>`</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>setting</span>.<span style=color:#a6e22e>jobName</span><span style=color:#e6db74>}</span><span style=color:#e6db74>JobDef`</span>,
+        {
+          <span style=color:#66d9ef>type</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;container&#34;</span>,
+          <span style=color:#a6e22e>jobDefinitionName</span>: <span style=color:#66d9ef>setting.jobName</span>,
+          <span style=color:#a6e22e>platformCapabilities</span><span style=color:#f92672>:</span> [<span style=color:#e6db74>&#34;FARGATE&#34;</span>], <span style=color:#75715e>// 注意: FARGATEを指定しないと FARGATE環境では実行できない
+</span><span style=color:#75715e></span>          <span style=color:#a6e22e>containerProperties</span><span style=color:#f92672>:</span> {
+            <span style=color:#a6e22e>image</span>: <span style=color:#66d9ef>setting.imageUri</span>,
+            <span style=color:#a6e22e>executionRoleArn</span>: <span style=color:#66d9ef>DEFAULT_EXEC_ROLE_ARN</span>,
+            <span style=color:#a6e22e>jobRoleArn</span>: <span style=color:#66d9ef>setting.jobRoleArn</span>,
+            <span style=color:#a6e22e>resourceRequirements</span><span style=color:#f92672>:</span> [
+              { <span style=color:#66d9ef>type</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;MEMORY&#34;</span>, <span style=color:#a6e22e>value</span>: <span style=color:#66d9ef>String</span>(<span style=color:#a6e22e>setting</span>.<span style=color:#a6e22e>memory</span>) },
+              { <span style=color:#66d9ef>type</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;VCPU&#34;</span>, <span style=color:#a6e22e>value</span>: <span style=color:#66d9ef>String</span>(<span style=color:#a6e22e>setting</span>.<span style=color:#a6e22e>vcpu</span>) },
+            ],
+            <span style=color:#a6e22e>networkConfiguration</span><span style=color:#f92672>:</span> {
+              <span style=color:#a6e22e>assignPublicIp</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;ENABLED&#34;</span>, <span style=color:#75715e>// 注意: これがないとECRなどにアクセスできない
+</span><span style=color:#75715e></span>            },
+          },
+          <span style=color:#a6e22e>retryStrategy</span><span style=color:#f92672>:</span> {
+            <span style=color:#a6e22e>attempts</span>: <span style=color:#66d9ef>1</span>,
+          },
+        }
+      );
+      <span style=color:#a6e22e>jobs</span>[<span style=color:#a6e22e>setting</span>.<span style=color:#a6e22e>imageUri</span>] <span style=color:#f92672>=</span> <span style=color:#a6e22e>jobDef</span>.<span style=color:#a6e22e>ref</span>;
+    }
+  }
+}
+
+<span style=color:#66d9ef>export</span> <span style=color:#66d9ef>type</span> <span style=color:#a6e22e>ContainerJobSetting</span> <span style=color:#f92672>=</span> {
+  <span style=color:#a6e22e>imageUri</span>: <span style=color:#66d9ef>string</span>;
+  <span style=color:#a6e22e>jobName</span>: <span style=color:#66d9ef>string</span>;
+  <span style=color:#a6e22e>jobRoleArn?</span>: <span style=color:#66d9ef>string</span>;
+  <span style=color:#a6e22e>memory</span>: <span style=color:#66d9ef>number</span>; <span style=color:#75715e>// in MB
+</span><span style=color:#75715e></span>  <span style=color:#a6e22e>vcpu</span>: <span style=color:#66d9ef>number</span>;
+};
+
+<span style=color:#75715e>/**
+</span><span style=color:#75715e> * JobDefinition の情報
+</span><span style=color:#75715e> * Memory と CPU の指定可能な組み合わせは以下に限定されているので注意。
+</span><span style=color:#75715e> * https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-batch-jobdefinition-resourcerequirement.html
+</span><span style=color:#75715e> */</span>
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>CONTAINER_JOB_SETTINGS</span>: <span style=color:#66d9ef>ContainerJobSetting</span>[] <span style=color:#f92672>=</span> [
+  {
+    <span style=color:#a6e22e>imageUri</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;busybox&#34;</span>,
+    <span style=color:#a6e22e>jobName</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;HelloWorld&#34;</span>,
+    <span style=color:#a6e22e>memory</span>: <span style=color:#66d9ef>512</span>,
+    <span style=color:#a6e22e>vcpu</span>: <span style=color:#66d9ef>0.25</span>,
+  },
+];
+</code></pre></div><h2 id=さいごに>さいごに</h2>
+<p>一度わかると大したことないのですが、そこまでがなかなか難航しますね。</p>
+</div>
+<footer class=post__footer>
+<div class="post__tags tags clearfix"><svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5.0 11V3C0 1.5.8.8.8.8S1.5.0 3 0h8c1.5.0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 100-6 3 3 0 000 6z"/></svg>
+<ul class=tags__list>
+<li class=tags__item>
+<a class="tags__link btn" href=/ja/tags/aws-cdk-v2/ rel=tag>AWS CDK v2</a>
+</li>
+<li class=tags__item>
+<a class="tags__link btn" href=/ja/tags/typescript/ rel=tag>TypeScript</a>
+</li>
+<li class=tags__item>
+<a class="tags__link btn" href=/ja/tags/awsbatch/ rel=tag>AWSBatch</a>
+</li>
+<li class=tags__item>
+<a class="tags__link btn" href=/ja/tags/fargate_spot/ rel=tag>FARGATE_SPOT</a>
+</li>
+</ul>
+</div>
+</footer>
+</article>
+</main>
+</div>
+</div>
+<footer class=footer>
+<div class="container footer__container flex">
+<div class=footer__links>
+<a class=footer__link href=/ja/etc/my_first_step/>このBlogについて</a>
+</div>
+<div class=footer__copyright>
+&copy; 2022 Mokemokechicken.
+<span class=footer__copyright-credits>このサイトは <a href=https://gohugo.io/ rel="nofollow noopener" target=_blank>Hugo</a> と <a href=https://github.com/Vimux/Mainroad/ rel="nofollow noopener" target=_blank>Mainroad</a> テーマで生成されています。</span>
+</div>
+</div>
+</footer>
+</div>
+<script async defer src=/js/menu.js></script>
+</body>
+</html>
