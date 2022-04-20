@@ -3,14 +3,14 @@
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
 <meta http-equiv=x-ua-compatible content="IE=edge">
-<title>EventBridge - My First Step</title>
+<title>LambdaInvoke - My First Step</title>
 <script>(function(a,b){a[b]=a[b].replace("no-js","js")})(document.documentElement,"className")</script>
 <meta name=description content>
-<meta property="og:title" content="EventBridge">
+<meta property="og:title" content="LambdaInvoke">
 <meta property="og:description" content="Mokemokechicken's personal blog about the first steps in many things.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://blog.my-first-step.info/ja/tags/eventbridge/"><meta property="og:site_name" content="My First Step">
-<meta itemprop=name content="EventBridge">
+<meta property="og:url" content="https://blog.my-first-step.info/ja/tags/lambdainvoke/"><meta property="og:site_name" content="My First Step">
+<meta itemprop=name content="LambdaInvoke">
 <meta itemprop=description content="Mokemokechicken's personal blog about the first steps in many things.">
 <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
 <link rel=dns-prefetch href=//fonts.googleapis.com>
@@ -18,7 +18,7 @@
 <link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
 <link rel=stylesheet href=/css/style.css>
 <link rel=stylesheet href=/css/my-style.css>
-<link rel=alternate type=application/rss+xml href=/ja/tags/eventbridge/index.xml title="My First Step">
+<link rel=alternate type=application/rss+xml href=/ja/tags/lambdainvoke/index.xml title="My First Step">
 <link rel="shortcut icon" href=/favicon.ico>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-SV0KGCR6DC"></script>
 <script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-SV0KGCR6DC',{anonymize_ip:!1})}</script>
@@ -42,27 +42,23 @@
 <div class=primary>
 <main class="main list" role=main>
 <header class=main__header>
-<h1 class=main__title>EventBridge</h1>
+<h1 class=main__title>LambdaInvoke</h1>
 </header><article class="list__item post">
 <header class=list__header>
 <h2 class="list__title post__title">
-<a href=/ja/tech/aws_cdk_v2/lambda_cron_schedule/ rel=bookmark>
-AWS CDK(v2): Lambda を Cron実行する
+<a href=/ja/tech/aws_cdk_v2/step_functions__lambda_task_with_context/ rel=bookmark>
+AWS CDK(v2) StepFunctions の LambdaInvoke で Payload を Context や Input から動的に上書きする
 </a>
 </h2>
-<p class="list__lead post__lead">AWS CDK(v2)を使って Lambda を Cron実行するメモ</p>
+<p class="list__lead post__lead">AWS CDK V2を使って、StepFunctions の LambdaInvoke で Payload を Context や Input から動的に上書きする方法</p>
 <div class="list__meta meta">
 <div class="meta__item-datetime meta__item">
-<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2021-12-21T00:00:00Z>2021-12-21</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2 1 2h8v11H0V2z"/></svg><span class=meta__text><a class=meta__link href=/ja/categories/aws-cdk-v2/ rel=category>AWS CDK v2</a>
-</span>
-</div>
-<div class="meta__item-translations meta__item">
-<span class=meta__text>翻訳: <a class=meta__link href=/en/tech/aws_cdk_v2/lambda_cron_schedule/>EN</a>
+<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2022-04-20T00:00:00Z>2022-04-20</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2 1 2h8v11H0V2z"/></svg><span class=meta__text><a class=meta__link href=/ja/categories/aws-cdk-v2/ rel=category>AWS CDK v2</a>
 </span>
 </div></div>
 </header>
 <div class="content list__excerpt post__content clearfix">
-CDKを使うと、LambdaとEventBridgeを使って簡単にスケジュール実行をすることができます。 スケジュールの表記にはいわゆる cro
+はじめに AWS CDK で StepFunctions から Lambda を実行するときに、 LambdaInvoke を使うと便利ですが、 その payload を Input 情報から Mapping する方法をメモしておきます。 これは検索すると結構見つかりま
 </div>
 </article>
 </main>
