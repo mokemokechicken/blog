@@ -5,7 +5,7 @@
 <meta http-equiv=x-ua-compatible content="IE=edge">
 <title>秒数→◯分◯秒 という表記への変換を DateComponentsFormatter で実現する - My First Step</title>
 <script>(function(a,b){a[b]=a[b].replace("no-js","js")})(document.documentElement,"className")</script>
-<meta name=description content="◯分◯秒 という表記を DateComponentsFormatter で実現する方法です">
+<meta name=description content>
 <meta property="og:title" content="秒数→◯分◯秒 という表記への変換を DateComponentsFormatter で実現する">
 <meta property="og:description" content="◯分◯秒 という表記を DateComponentsFormatter で実現する方法です">
 <meta property="og:type" content="article">
@@ -15,7 +15,7 @@
 <meta itemprop=name content="秒数→◯分◯秒 という表記への変換を DateComponentsFormatter で実現する">
 <meta itemprop=description content="◯分◯秒 という表記を DateComponentsFormatter で実現する方法です"><meta itemprop=datePublished content="2022-01-07T00:00:00+00:00">
 <meta itemprop=dateModified content="2022-01-07T00:00:00+00:00">
-<meta itemprop=wordCount content="577">
+<meta itemprop=wordCount content="514">
 <meta itemprop=keywords content="swift,">
 <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
 <link rel=dns-prefetch href=//fonts.googleapis.com>
@@ -48,7 +48,6 @@
 <article class=post>
 <header class=post__header>
 <h1 class=post__title>秒数→◯分◯秒 という表記への変換を DateComponentsFormatter で実現する</h1>
-<p class=post__lead>秒数→◯分◯秒 という表記への変換を DateComponentsFormatter で実現する方法</p>
 <div class="post__meta meta">
 <div class="meta__item-datetime meta__item">
 <svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2022-01-07T00:00:00Z>2022-01-07</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2 1 2h8v11H0V2z"/></svg><span class=meta__text><a class=meta__link href=/ja/categories/swift/ rel=category>swift</a>
@@ -61,10 +60,10 @@
 <nav id=TableOfContents>
 <ul>
 <li><a href=#環境>環境</a></li>
-<li><a href=#分秒-という表記を-datecomponentsformatter-で実現する方法>◯分◯秒 という表記を DateComponentsFormatter で実現する方法</a>
+<li><a href=#-分--秒-という表記を-datecomponentsformatter-で実現する方法>◯ 分 ◯ 秒 という表記を DateComponentsFormatter で実現する方法</a>
 <ul>
 <li><a href=#datecomponentsformatter-の-基本的な使い方><code>DateComponentsFormatter</code> の 基本的な使い方</a></li>
-<li><a href=#日本語localizeを有効にする>日本語Localizeを有効にする</a></li>
+<li><a href=#日本語-localize-を有効にする>日本語 Localize を有効にする</a></li>
 </ul>
 </li>
 <li><a href=#参考>参考</a></li>
@@ -72,21 +71,21 @@
 </nav>
 </div>
 </div><div class="content post__content clearfix">
-<p><code>DateComponentsFormatter</code> を使うと、 秒数 を <code>◯分◯秒</code> というStringに変換してくれます。
-自前実装するより、端末の言語設定でLocalizeされるので活用していきたいところです。
-ただ、この Object は locale を指定することができず、どうもアプリのLocalization設定と端末の言語設定が一致したときのみ反映されるようです。
-基本的にアプリを作り始めたときは、English でのLocalizationしかされていないような挙動なので、
-日本語で使うような &ldquo;◯分◯秒&rdquo; を実現するにはその辺りをちょっと対応する必要があります。</p>
+<p><code>DateComponentsFormatter</code> を使うと、 秒数 を <code>◯分◯秒</code> という String に変換してくれます。
+自前実装するより、端末の言語設定で Localize されるので活用していきたいところです。
+ただ、この Object は locale を指定することができず、どうもアプリの Localization 設定と端末の言語設定が一致したときのみ反映されるようです。
+基本的にアプリを作り始めたときは、English での Localization しかされていないような挙動なので、
+日本語で使うような &ldquo;◯ 分 ◯ 秒&rdquo; を実現するにはその辺りをちょっと対応する必要があります。</p>
 <h2 id=環境>環境</h2>
 <ul>
 <li>MacOS: <code>12.1</code></li>
 <li>Xcode: <code>Version 13.2.1 (13C100)</code></li>
 <li>Swift: <code>5.5.2</code></li>
 </ul>
-<h2 id=分秒-という表記を-datecomponentsformatter-で実現する方法>◯分◯秒 という表記を DateComponentsFormatter で実現する方法</h2>
+<h2 id=-分--秒-という表記を-datecomponentsformatter-で実現する方法>◯ 分 ◯ 秒 という表記を DateComponentsFormatter で実現する方法</h2>
 <h3 id=datecomponentsformatter-の-基本的な使い方><code>DateComponentsFormatter</code> の 基本的な使い方</h3>
 <p>基本的な使い方は以下のようになります。
-ただ、これだけだと <code>2 minutes, 15 seconds</code> のような表記になります(日本語Localizationしていない場合)。</p>
+ただ、これだけだと <code>2 minutes, 15 seconds</code> のような表記になります(日本語 Localization していない場合)。</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift>fileprivate <span style=color:#66d9ef>let</span> dateComponentFormattter = createDateComponentsFormatter()
 
 <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>createDateComponentsFormatter</span>() -&gt; DateComponentsFormatter {
@@ -102,15 +101,15 @@
 
 <span style=color:#75715e>// print(secondsToString(135))</span>
 <span style=color:#75715e>// -&gt; 2分 15秒 にしたい</span>
-</code></pre></div><h3 id=日本語localizeを有効にする>日本語Localizeを有効にする</h3>
+</code></pre></div><h3 id=日本語-localize-を有効にする>日本語 Localize を有効にする</h3>
 <p><code>Targets -> Info</code> に 以下の項目を追加します。
-一応これだけで「日本語Localization対応」という扱いになるようです。
+一応これだけで「日本語 Localization 対応」という扱いになるようです。
 後は端末の言語設定が日本語になっていれば、上記関数の挙動が変化します。</p>
 <figure class=center><img src=./image.png>
 </figure>
 <h2 id=参考>参考</h2>
 <ul>
-<li><a href=https://qiita.com/tamadeveloper/items/2407b5921df8cce5b5c1#%E3%83%AD%E3%83%BC%E3%82%AB%E3%83%A9%E3%82%A4%E3%82%BA%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6>【Swift】DateComponentsFormatterで「時間の量」を出力する#ローカライズについて</a></li>
+<li><a href=https://qiita.com/tamadeveloper/items/2407b5921df8cce5b5c1#%E3%83%AD%E3%83%BC%E3%82%AB%E3%83%A9%E3%82%A4%E3%82%BA%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6>【Swift】DateComponentsFormatter で「時間の量」を出力する#ローカライズについて</a></li>
 <li><a href=https://developer.apple.com/documentation/foundation/datecomponentsformatter/unitsstyle>DateComponentsFormatter.UnitsStyle</a></li>
 </ul>
 </div>

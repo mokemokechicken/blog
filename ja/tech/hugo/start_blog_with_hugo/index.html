@@ -5,17 +5,17 @@
 <meta http-equiv=x-ua-compatible content="IE=edge">
 <title>Hugo で ブログ を始める - My First Step</title>
 <script>(function(a,b){a[b]=a[b].replace("no-js","js")})(document.documentElement,"className")</script>
-<meta name=description content="現時点である程度PCに詳しい人が広告を貼り付けられるブログを無料(or 低価格)で始めるにはどうしたらいいのか">
+<meta name=description content>
 <meta property="og:title" content="Hugo で ブログ を始める">
-<meta property="og:description" content="現時点である程度PCに詳しい人が広告を貼り付けられるブログを無料(or 低価格)で始めるにはどうしたらいいのか">
+<meta property="og:description" content="現時点である程度PCに詳しい人が広告を貼り付けられるブログを無料(or 低価格)で始めるにはどうしたらいいのか、を検討しました">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://blog.my-first-step.info/ja/tech/hugo/start_blog_with_hugo/"><meta property="article:section" content="tech">
 <meta property="article:published_time" content="2021-12-13T00:00:00+00:00">
 <meta property="article:modified_time" content="2021-12-13T00:00:00+00:00"><meta property="og:site_name" content="My First Step">
 <meta itemprop=name content="Hugo で ブログ を始める">
-<meta itemprop=description content="現時点である程度PCに詳しい人が広告を貼り付けられるブログを無料(or 低価格)で始めるにはどうしたらいいのか"><meta itemprop=datePublished content="2021-12-13T00:00:00+00:00">
+<meta itemprop=description content="現時点である程度PCに詳しい人が広告を貼り付けられるブログを無料(or 低価格)で始めるにはどうしたらいいのか、を検討しました"><meta itemprop=datePublished content="2021-12-13T00:00:00+00:00">
 <meta itemprop=dateModified content="2021-12-13T00:00:00+00:00">
-<meta itemprop=wordCount content="2729">
+<meta itemprop=wordCount content="2606">
 <meta itemprop=keywords content="Hugo,Install & Setting,">
 <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
 <link rel=dns-prefetch href=//fonts.googleapis.com>
@@ -70,13 +70,13 @@
 <li><a href=#独自ドメインにした理由>独自ドメインにした理由</a></li>
 </ul>
 </li>
-<li><a href=#hugoでgithub-pagesにコンテンツを公開するまで>HugoでGitHub Pagesにコンテンツを公開するまで</a></li>
+<li><a href=#hugo-で-github-pages-にコンテンツを公開するまで>Hugo で GitHub Pages にコンテンツを公開するまで</a></li>
 <li><a href=#独自ドメインを設定する>独自ドメインを設定する</a>
 <ul>
 <li><a href=#ドメインを取得する>ドメインを取得する</a></li>
-<li><a href=#名前を決めてdnsレコードを追加する>名前を決めて、DNSレコードを追加する</a></li>
-<li><a href=#httpsを有効にする>HTTPSを有効にする</a></li>
-<li><a href=#github-actionsで反映している場合は>GitHub Actionsで反映している場合は</a></li>
+<li><a href=#名前を決めてdns-レコードを追加する>名前を決めて、DNS レコードを追加する</a></li>
+<li><a href=#https-を有効にする>HTTPS を有効にする</a></li>
+<li><a href=#github-actions-で反映している場合は>GitHub Actions で反映している場合は</a></li>
 </ul>
 </li>
 <li><a href=#多言語対応にする>多言語対応にする</a>
@@ -90,46 +90,46 @@
 </nav>
 </div>
 </div><div class="content post__content clearfix">
-<p>現時点である程度PCに詳しい人が広告を貼り付けられるブログを無料(or 低価格)で始めるにはどうしたらいいのか、を検討しました。</p>
-<p>Macユーザー向けの内容ですが、Windowsなどでも基本は同じです。</p>
+<p>現時点である程度 PC に詳しい人が広告を貼り付けられるブログを無料(or 低価格)で始めるにはどうしたらいいのか、を検討しました。</p>
+<p>Mac ユーザー向けの内容ですが、Windows などでも基本は同じです。</p>
 <h2 id=無料で広告を貼り付けられるブログサイトを始めたい>無料で広告を貼り付けられるブログサイトを始めたい</h2>
 <p>と、欲望丸出しで考えた場合、どういう選択肢があるのかを考えた結果、Hugo+GitHubPages(+独自ドメイン) というのが一番自分に合っていました。</p>
 <ul>
-<li><a href=https://gohugo.io/>Hugo</a> は、Markdownで記事を書くと色々な用途の静的なHTMLやリソースに変換してくれるツールです。</li>
-<li><a href=https://docs.github.com/ja/pages/getting-started-with-github-pages/about-github-pages>GitHub Pages</a> は、GitHubが提供する無料で使える静的なWebコンテンツ配信サービスです(私にとって)。
+<li><a href=https://gohugo.io/>Hugo</a> は、Markdown で記事を書くと色々な用途の静的な HTML やリソースに変換してくれるツールです。</li>
+<li><a href=https://docs.github.com/ja/pages/getting-started-with-github-pages/about-github-pages>GitHub Pages</a> は、GitHub が提供する無料で使える静的な Web コンテンツ配信サービスです(私にとって)。
 <ul>
-<li>GitHubのアカウントが必要です（無料で作れます）。</li>
+<li>GitHub のアカウントが必要です（無料で作れます）。</li>
 <li><code>https://&lt;username>.github.io/</code> というドメインでアクセスできるようになります(<code>&lt;username></code> は取得したアカウント名が入ります)。</li>
 </ul>
 </li>
 </ul>
-<p>要するに、この２つだけあれば、比較的簡単にそういうWebサイトを作ることができるわけです。</p>
+<p>要するに、この２つだけあれば、比較的簡単にそういう Web サイトを作ることができるわけです。</p>
 <h3 id=ブログサービスを利用しなかった理由>ブログサービスを利用しなかった理由</h3>
-<p>始めるのは一番簡単ですが、10~20年後にまだ残っているかという観点で見ると不明であり、そのときにせっかく書いたコンテンツを抽出するのも面倒そうです。
+<p>始めるのは一番簡単ですが、10~20 年後にまだ残っているかという観点で見ると不明であり、そのときにせっかく書いたコンテンツを抽出するのも面倒そうです。
 今までも、何度かメジャーな投稿系サービスが閉鎖になっていったことを考えると、ちょっと嫌だな&mldr;と思いました。</p>
 <h3 id=独自ドメインにした理由>独自ドメインにした理由</h3>
 <p><code>https://&lt;username>.github.io/</code> というドメイン名でも基本的には問題ないのですが、
-まー万が一、GitHub Pagesが閉鎖になった場合、せっかくそのドメインに集客できていたのに（皮算用&mldr;）ちょっと嫌だな&mldr;と。
-また、年間1000~2000円くらいで独自ドメインは維持できるので、それくらいは問題ないかなと。映画館に1回行ったと思えばね。</p>
-<h2 id=hugoでgithub-pagesにコンテンツを公開するまで>HugoでGitHub Pagesにコンテンツを公開するまで</h2>
-<p>基本的には <a href=https://zenn.dev/kato_k/articles/66531db0c4024d>HUGOとGitHub(Actions/Pages)で爆速ブログ作成</a> の記事がとても参考になりました。
-上記の手順でHugoでGitHub Pagesにコンテンツを公開するまで行うことができます。</p>
-<p>もしくは Hugoの公式ドキュメントの <a href=https://gohugo.io/hosting-and-deployment/hosting-on-github/>Host On GitHub</a> も参考になります。</p>
+まー万が一、GitHub Pages が閉鎖になった場合、せっかくそのドメインに集客できていたのに（皮算用&mldr;）ちょっと嫌だな&mldr;と。
+また、年間 1000~2000 円くらいで独自ドメインは維持できるので、それくらいは問題ないかなと。映画館に 1 回行ったと思えばね。</p>
+<h2 id=hugo-で-github-pages-にコンテンツを公開するまで>Hugo で GitHub Pages にコンテンツを公開するまで</h2>
+<p>基本的には <a href=https://zenn.dev/kato_k/articles/66531db0c4024d>HUGO と GitHub(Actions/Pages)で爆速ブログ作成</a> の記事がとても参考になりました。
+上記の手順で Hugo で GitHub Pages にコンテンツを公開するまで行うことができます。</p>
+<p>もしくは Hugo の公式ドキュメントの <a href=https://gohugo.io/hosting-and-deployment/hosting-on-github/>Host On GitHub</a> も参考になります。</p>
 <h2 id=独自ドメインを設定する>独自ドメインを設定する</h2>
 <h3 id=ドメインを取得する>ドメインを取得する</h3>
 <p>あまり深く考えずに、<a href=https://www.onamae.com/>お名前.com</a> でこのドメインを取得しました。
-ここは基本的に何でも良いですが、お名前.comで特に大きな問題もなく取得できました。</p>
-<p>ちょっと注意が必要なのは、Topページで紹介されているドメインの料金は「1年目」のものであり、2年目以降一気に値段が上がるものもあります。
+ここは基本的に何でも良いですが、お名前.com で特に大きな問題もなく取得できました。</p>
+<p>ちょっと注意が必要なのは、Top ページで紹介されているドメインの料金は「1 年目」のものであり、2 年目以降一気に値段が上がるものもあります。
 <a href=https://www.onamae.com/service/d-price/>料金プラン</a> などで自分に合った値段のドメインをまず探してから申し込むようにしましょう。</p>
-<p>私が取得した <code>.info</code> ドメインは 現時点で 1年目目280円/年, 2年目以降1628円/年 でした。</p>
-<p>あとは 「Whois代行」サービス(300~400円/年)には申し込みました。
-これ申し込まないと、自分の名前とか住所がwhoisで公開されるっぽい（試してはいない）ので、まあ必要かな、、、と。</p>
-<p>SSLとかは、GitHub Pagesの方で無料でワンクリックで設定してくれますので、とりあえずは不要です。</p>
-<h3 id=名前を決めてdnsレコードを追加する>名前を決めて、DNSレコードを追加する</h3>
-<p>GitHub Pages で <code>my-first-step.info</code> より <code>www.my-first-step.info</code> とか <code>blog.my-first-step.info</code> にしなさい、と強く推奨していたので従うことに。<code>****.my-first-step.info</code> の <code>****</code> 部分の名前を決める必要があります。Blogサイトなので素直に <code>blog</code> にしました。</p>
-<p>次に、お名前.comのDNSの設定で <code>blog.my-first-step.info</code> という名前を <code>CNAME</code> で <code>mokemokechicken.github.io</code> にしておきます。
+<p>私が取得した <code>.info</code> ドメインは 現時点で 1 年目目 280 円/年, 2 年目以降 1628 円/年 でした。</p>
+<p>あとは 「Whois 代行」サービス(300~400 円/年)には申し込みました。
+これ申し込まないと、自分の名前とか住所が whois で公開されるっぽい（試してはいない）ので、まあ必要かな、、、と。</p>
+<p>SSL とかは、GitHub Pages の方で無料でワンクリックで設定してくれますので、とりあえずは不要です。</p>
+<h3 id=名前を決めてdns-レコードを追加する>名前を決めて、DNS レコードを追加する</h3>
+<p>GitHub Pages で <code>my-first-step.info</code> より <code>www.my-first-step.info</code> とか <code>blog.my-first-step.info</code> にしなさい、と強く推奨していたので従うことに。<code>****.my-first-step.info</code> の <code>****</code> 部分の名前を決める必要があります。Blog サイトなので素直に <code>blog</code> にしました。</p>
+<p>次に、お名前.com の DNS の設定で <code>blog.my-first-step.info</code> という名前を <code>CNAME</code> で <code>mokemokechicken.github.io</code> にしておきます。
 ここは管理画面で何度も迷子になったので、ちょっとキャプチャを貼っておきます。</p>
-<p>Topページから、
+<p>Top ページから、
 <figure class=center><img src=./f1.png width=50%><figcaption>
 <h4>Topページ</h4>
 </figcaption>
@@ -150,32 +150,32 @@
 </figure>
 </p>
 <hr>
-<p>CNAMEを設定する
+<p>CNAME を設定する
 <figure class=center><img src=./f4.png width=50%><figcaption>
 <h4>CNAMEを設定する</h4>
 </figcaption>
 </figure>
 </p>
-<p>あとは、確認して更新すればOKです。</p>
-<h3 id=httpsを有効にする>HTTPSを有効にする</h3>
-<p>次に、GitHubのページに行き、①Settings → ②Pages と進み、③ Custom Domain に <code>blog.my-first-step.info</code> を入れて 「Save」を押します。
-DNSの情報が妙にCacheされていたりして、すぐにはOKにならない（私はそうだった）ことがありますが、
+<p>あとは、確認して更新すれば OK です。</p>
+<h3 id=https-を有効にする>HTTPS を有効にする</h3>
+<p>次に、GitHub のページに行き、①Settings → ②Pages と進み、③ Custom Domain に <code>blog.my-first-step.info</code> を入れて 「Save」を押します。
+DNS の情報が妙に Cache されていたりして、すぐには OK にならない（私はそうだった）ことがありますが、
 次の日くらいにはその辺も直るので、気長に待ちます。
-確認できると、④の <code>Enforce HTTPS</code> をクリックできるようになるので、クリックします。
+確認できると、④ の <code>Enforce HTTPS</code> をクリックできるようになるので、クリックします。
 これで晴れて https でアクセスできるようになります。</p>
 <figure class=center><img src=./pages.png><figcaption>
 <h4>HTTPSを有効にする</h4>
 </figcaption>
 </figure>
-<h3 id=github-actionsで反映している場合は>GitHub Actionsで反映している場合は</h3>
-<p>どうも GitHub Pages の リポジトリのTOPディレクトリに <code>CNAME</code> という名前のファイルに <code>blog.my-first-step.info</code> と書いておく必要があるようです。
-これがないと、先程行ったCustom Domainの設定が消えてしまいます。
+<h3 id=github-actions-で反映している場合は>GitHub Actions で反映している場合は</h3>
+<p>どうも GitHub Pages の リポジトリの TOP ディレクトリに <code>CNAME</code> という名前のファイルに <code>blog.my-first-step.info</code> と書いておく必要があるようです。
+これがないと、先程行った Custom Domain の設定が消えてしまいます。
 <figure class=center><img src=./cname.png width=50%><figcaption>
 <h4>CNAMEファイルが無いと設定が消えてしまう</h4>
 </figcaption>
 </figure>
 </p>
-<p>最終的にそうなっていれば良いのですが、例えば、GitHub Actionsでデプロイしている場合、
+<p>最終的にそうなっていれば良いのですが、例えば、GitHub Actions でデプロイしている場合、
 以下のように <code>cname: blog.my-first-step.info</code> を付けておくと自動的のそのファイルを作ってくれます（逆に無いと消してしまいます）。</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml:.github/workflows/gh-pages.yml data-lang=yaml:.github/workflows/gh-pages.yml><span style=color:#75715e># …略</span>
       - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>Build</span>
@@ -192,10 +192,10 @@ DNSの情報が妙にCacheされていたりして、すぐにはOKにならな�
 </code></pre></div><h2 id=多言語対応にする>多言語対応にする</h2>
 <p>広告を貼り付けたいという邪な心で始めたブログですので、全世界の英語圏の人たちにもぜひアクセスして欲しいものです。
 最近は <a href=https://www.deepl.com/>DeepL</a> のような優秀な翻訳サービスもありますし、英語が得意でなくても多少読めるコンテンツを作ることは不可能ではありません。</p>
-<p>Hugoは簡単に多言語対応することができます。
+<p>Hugo は簡単に多言語対応することができます。
 詳細は <a href=https://gohugo.io/content-management/multilingual/>Multilingual Mode</a> にありますが、概要を書き残しておきます。</p>
 <h3 id=configtoml-に-対応する言語を追加>config.toml に 対応する言語を追加</h3>
-<p>日本語と英語以外は全く理解できないので、その2ヶ国語に対応するとします。
+<p>日本語と英語以外は全く理解できないので、その 2 ヶ国語に対応するとします。
 デフォルトの言語(<code>defaultContentLanguage</code>)を何にしようかと思いましたが、英語にするほど強気にはなれず、日本語にしておきます。
 その場合例えば、以下のように書きます。</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-toml data-lang=toml><span style=color:#a6e22e>defaultContentLanguage</span> = <span style=color:#e6db74>&#34;ja&#34;</span>
@@ -211,13 +211,13 @@ DNSの情報が妙にCacheされていたりして、すぐにはOKにならな�
     <span style=color:#a6e22e>title</span> = <span style=color:#e6db74>&#39;My First Step&#39;</span>
     <span style=color:#a6e22e>languageName</span> = <span style=color:#e6db74>&#34;English&#34;</span>
     <span style=color:#a6e22e>weight</span> = <span style=color:#ae81ff>20</span>
-</code></pre></div><p><code>defaultContentLanguageInSubdir</code> は TopページのURLが、</p>
+</code></pre></div><p><code>defaultContentLanguageInSubdir</code> は Top ページの URL が、</p>
 <ul>
 <li><code>false</code> にすると<code>https://blog.my-first-step.info/</code> になる</li>
 <li><code>true</code> にすると <code>https://blog.my-first-step.info/ja/</code> になる</li>
 </ul>
 <p>というものです。</p>
-<p><code>weight</code> は何か優先順位のようなものらしいです。小さい方が優先されるらしいです(weightなら逆なんじゃぁ&mldr;w)。</p>
+<p><code>weight</code> は何か優先順位のようなものらしいです。小さい方が優先されるらしいです(weight なら逆なんじゃぁ&mldr;w)。</p>
 <h3 id=ファイル名をちょっと変えてそれぞれの言語対応のコンテンツを作る>ファイル名をちょっと変えて、それぞれの言語対応のコンテンツを作る</h3>
 <p>あとは、</p>
 <ul>

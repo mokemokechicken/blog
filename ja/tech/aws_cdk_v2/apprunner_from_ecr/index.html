@@ -15,7 +15,7 @@
 <meta itemprop=name content="ECR上のImage を AWS App Runner に CDK V2 でデプロイする">
 <meta itemprop=description content="ECR上のImage を AWS App Runner に CDK V2 でデプロイします"><meta itemprop=datePublished content="2022-01-20T00:00:00+00:00">
 <meta itemprop=dateModified content="2022-01-20T00:00:00+00:00">
-<meta itemprop=wordCount content="582">
+<meta itemprop=wordCount content="572">
 <meta itemprop=keywords content="AWS CDK v2,App Runner,">
 <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
 <link rel=dns-prefetch href=//fonts.googleapis.com>
@@ -73,10 +73,10 @@
 <p><a href=https://aws.amazon.com/jp/apprunner/>AWS App Runner</a> を使うと、Web Server を Docker コンテナにしておけば簡単にデプロイできます。
 しかも、</p>
 <ul>
-<li>ECR の Imageを更新したら自動で再デプロイしてくれる（自動にしないことももちろん可能）</li>
+<li>ECR の Image を更新したら自動で再デプロイしてくれる（自動にしないことももちろん可能）</li>
 <li>AutoScale や 独自ドメインの設定も可能</li>
-<li>アクセス数、Latency、Instance数などのメトリクスも設定無しで見れる</li>
-<li>Applicationログも自動で見られるようにしてくれる</li>
+<li>アクセス数、Latency、Instance 数などのメトリクスも設定無しで見れる</li>
+<li>Application ログも自動で見られるようにしてくれる</li>
 </ul>
 <p>といたれりつくせりです。ちょっとしたサービスをデプロイしたいときにはかなり重宝しそうです。</p>
 <p>一度慣れれば手動設定でもそこまで面倒ではないですが、
@@ -88,16 +88,16 @@
 <li><code>tsc</code>: <code>4.5.4</code></li>
 </ul>
 <h2 id=書き方>書き方</h2>
-<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Stack</span>, <span style=color:#a6e22e>StackProps</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;aws-cdk-lib&#39;</span>;
-<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Construct</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;constructs&#39;</span>;
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Stack</span>, <span style=color:#a6e22e>StackProps</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Construct</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;constructs&#34;</span>;
 
-<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>CfnService</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;aws-cdk-lib/aws-apprunner&#39;</span>;
-<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Role</span>, <span style=color:#a6e22e>ServicePrincipal</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;aws-cdk-lib/aws-iam&#39;</span>;
-<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>StringParameter</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;aws-cdk-lib/aws-ssm&#39;</span>;
-
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>CfnService</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib/aws-apprunner&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Role</span>, <span style=color:#a6e22e>ServicePrincipal</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib/aws-iam&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>StringParameter</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib/aws-ssm&#34;</span>;
 
 <span style=color:#75715e>// Deploy する Image の URI
-</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>IMAGE_URI</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;99999999999.dkr.ecr.ap-northeast-1.amazonaws.com/my-web-app:release&#39;</span>;
+</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>IMAGE_URI</span> <span style=color:#f92672>=</span>
+  <span style=color:#e6db74>&#34;99999999999.dkr.ecr.ap-northeast-1.amazonaws.com/my-web-app:release&#34;</span>;
 
 <span style=color:#66d9ef>export</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>MyWebAppStack</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Stack</span> {
   <span style=color:#66d9ef>constructor</span>(<span style=color:#a6e22e>scope</span>: <span style=color:#66d9ef>Construct</span>, <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>string</span>, <span style=color:#a6e22e>props?</span>: <span style=color:#66d9ef>StackProps</span>) {
@@ -111,15 +111,16 @@
       <span style=color:#a6e22e>serviceName</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;MyWebApp&#34;</span>,
       <span style=color:#a6e22e>sourceConfiguration</span><span style=color:#f92672>:</span> {
         <span style=color:#a6e22e>authenticationConfiguration</span><span style=color:#f92672>:</span> {
-          <span style=color:#a6e22e>accessRoleArn</span>: <span style=color:#66d9ef>buildRole.roleArn</span>,  <span style=color:#75715e>// ECRにアクセスするときのRole?
+          <span style=color:#a6e22e>accessRoleArn</span>: <span style=color:#66d9ef>buildRole.roleArn</span>, <span style=color:#75715e>// ECRにアクセスするときのRole?
 </span><span style=color:#75715e></span>        },
         <span style=color:#a6e22e>imageRepository</span><span style=color:#f92672>:</span> {
           <span style=color:#a6e22e>imageIdentifier</span>: <span style=color:#66d9ef>IMAGE_URI</span>,
-          <span style=color:#a6e22e>imageRepositoryType</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;ECR&#39;</span>,
+          <span style=color:#a6e22e>imageRepositoryType</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;ECR&#34;</span>,
           <span style=color:#a6e22e>imageConfiguration</span><span style=color:#f92672>:</span> {
             <span style=color:#a6e22e>port</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;8080&#34;</span>, <span style=color:#75715e>// Listen Port
-</span><span style=color:#75715e></span>            <span style=color:#a6e22e>runtimeEnvironmentVariables</span><span style=color:#f92672>:</span> [ <span style=color:#75715e>// 実行時の環境変数
-</span><span style=color:#75715e></span>              {<span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;PRODUCTION&#34;</span>, <span style=color:#a6e22e>value</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;1&#34;</span>},
+</span><span style=color:#75715e></span>            <span style=color:#a6e22e>runtimeEnvironmentVariables</span><span style=color:#f92672>:</span> [
+              <span style=color:#75715e>// 実行時の環境変数
+</span><span style=color:#75715e></span>              { <span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;PRODUCTION&#34;</span>, <span style=color:#a6e22e>value</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;1&#34;</span> },
             ],
             <span style=color:#a6e22e>startCommand</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;web&#34;</span>, <span style=color:#75715e>// コンテナ実行時のコマンド
 </span><span style=color:#75715e></span>          },
@@ -132,34 +133,40 @@
         <span style=color:#a6e22e>instanceRoleArn</span>: <span style=color:#66d9ef>taskRole.roleArn</span>, <span style=color:#75715e>// コンテナ実行時の Role
 </span><span style=color:#75715e></span>      },
     });
-
   }
 
-  <span style=color:#a6e22e>createECRRole</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>Role</span> {
+  <span style=color:#a6e22e>createECRRole</span>()<span style=color:#f92672>:</span> <span style=color:#a6e22e>Role</span> {
     <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>role</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Role</span>(<span style=color:#66d9ef>this</span>, <span style=color:#e6db74>&#34;MyWebAppECRRole&#34;</span>, {
-      <span style=color:#a6e22e>assumedBy</span>: <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>ServicePrincipal</span>(<span style=color:#e6db74>&#39;build.apprunner.amazonaws.com&#39;</span>),
+      <span style=color:#a6e22e>assumedBy</span>: <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>ServicePrincipal</span>(<span style=color:#e6db74>&#34;build.apprunner.amazonaws.com&#34;</span>),
     });
-    <span style=color:#a6e22e>role</span>.<span style=color:#a6e22e>addManagedPolicy</span>({<span style=color:#a6e22e>managedPolicyArn</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess&#39;</span>});
+    <span style=color:#a6e22e>role</span>.<span style=color:#a6e22e>addManagedPolicy</span>({
+      <span style=color:#a6e22e>managedPolicyArn</span><span style=color:#f92672>:</span>
+        <span style=color:#e6db74>&#34;arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess&#34;</span>,
+    });
     <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>role</span>;
   }
 
   <span style=color:#75715e>// 実行時のRoleを作成する。必要にあわせて定義する。
-</span><span style=color:#75715e></span>  <span style=color:#a6e22e>createTaskRole</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>Role</span> {
+</span><span style=color:#75715e></span>  <span style=color:#a6e22e>createTaskRole</span>()<span style=color:#f92672>:</span> <span style=color:#a6e22e>Role</span> {
     <span style=color:#75715e>// AppRunner Task用のRoleを作成
 </span><span style=color:#75715e></span>    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>taskRole</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Role</span>(<span style=color:#66d9ef>this</span>, <span style=color:#e6db74>&#34;MyWebAppTaskRole&#34;</span>, {
       <span style=color:#a6e22e>assumedBy</span>: <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>ServicePrincipal</span>(<span style=color:#e6db74>&#34;tasks.apprunner.amazonaws.com&#34;</span>),
     });
-  
-    <span style=color:#75715e>// SSM の SecureString へのアクセス権 
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>googleJson</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>StringParameter</span>.<span style=color:#a6e22e>fromSecureStringParameterAttributes</span>(<span style=color:#66d9ef>this</span>, <span style=color:#e6db74>&#34;google-json&#34;</span>, {
-      <span style=color:#a6e22e>parameterName</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;/shared/google.json&#39;</span>,
-      <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>1</span>
-    });
+
+    <span style=color:#75715e>// SSM の SecureString へのアクセス権
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>googleJson</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>StringParameter</span>.<span style=color:#a6e22e>fromSecureStringParameterAttributes</span>(
+      <span style=color:#66d9ef>this</span>,
+      <span style=color:#e6db74>&#34;google-json&#34;</span>,
+      {
+        <span style=color:#a6e22e>parameterName</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;/shared/google.json&#34;</span>,
+        <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>1</span>,
+      }
+    );
 
     <span style=color:#75715e>// Grant する
 </span><span style=color:#75715e></span>    <span style=color:#a6e22e>googleJson</span>.<span style=color:#a6e22e>grantRead</span>(<span style=color:#a6e22e>taskRole</span>);
-  
-    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>taskRole</span>
+
+    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>taskRole</span>;
   }
 }
 </code></pre></div><h2 id=reference>Reference</h2>

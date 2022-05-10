@@ -5,7 +5,7 @@
 <meta http-equiv=x-ua-compatible content="IE=edge">
 <title>AWS CDK(v2): Lambda から SystemManagerのパラメーターストアを読めるようにする - My First Step</title>
 <script>(function(a,b){a[b]=a[b].replace("no-js","js")})(document.documentElement,"className")</script>
-<meta name=description content="AWS CDK(v2): Lambda から SystemManagerのパラメーターストアを読めるようにするメモ">
+<meta name=description content>
 <meta property="og:title" content="AWS CDK(v2): Lambda から SystemManagerのパラメーターストアを読めるようにする">
 <meta property="og:description" content="AWS CDK(v2): Lambda から SystemManagerのパラメーターストアを読めるようにするメモ">
 <meta property="og:type" content="article">
@@ -15,7 +15,7 @@
 <meta itemprop=name content="AWS CDK(v2): Lambda から SystemManagerのパラメーターストアを読めるようにする">
 <meta itemprop=description content="AWS CDK(v2): Lambda から SystemManagerのパラメーターストアを読めるようにするメモ"><meta itemprop=datePublished content="2021-12-21T00:00:00+00:00">
 <meta itemprop=dateModified content="2021-12-21T00:00:00+00:00">
-<meta itemprop=wordCount content="479">
+<meta itemprop=wordCount content="424">
 <meta itemprop=keywords content="AWS CDK v2,TypeScript,AWSLambda,SystemManager,ParameterStore,">
 <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
 <link rel=dns-prefetch href=//fonts.googleapis.com>
@@ -48,7 +48,6 @@
 <article class=post>
 <header class=post__header>
 <h1 class=post__title>AWS CDK(v2): Lambda から SystemManagerのパラメーターストアを読めるようにする</h1>
-<p class=post__lead>AWS CDK(v2): Lambda から SystemManagerのパラメーターストアを読めるようにするメモ</p>
 <div class="post__meta meta">
 <div class="meta__item-datetime meta__item">
 <svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2021-12-21T00:00:00Z>2021-12-21</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2 1 2h8v11H0V2z"/></svg><span class=meta__text><a class=meta__link href=/ja/categories/aws-cdk-v2/ rel=category>AWS CDK v2</a>
@@ -60,9 +59,9 @@
 </div></div>
 </header>
 <div class="content post__content clearfix">
-<p>AWS外部の鍵情報などをLambdaで使いたい場合、SystemManagerのパラメーターストア経由で渡す方法があります。
+<p>AWS 外部の鍵情報などを Lambda で使いたい場合、SystemManager のパラメーターストア経由で渡す方法があります。
 環境変数として渡すことも考えられますが、もう少し安全にしたい場合はこちらのやり方が良さそうです。
-CDKで簡単にその権限をLambdaに指定することができます。</p>
+CDK で簡単にその権限を Lambda に指定することができます。</p>
 <h2 id=version>Version</h2>
 <ul>
 <li><code>node</code>: <code>16.13.1</code></li>
@@ -70,8 +69,8 @@ CDKで簡単にその権限をLambdaに指定することができます。</p>
 <li><code>tsc</code>: <code>4.5.4</code></li>
 </ul>
 <h2 id=書き方>書き方</h2>
-<h3 id=stack側>Stack側</h3>
-<p>CDKの方では、Lambdaに読み込みを許可するパラメータ名を <code>KEY_NAME</code> などの環境変数で渡しつつ、<code>grantRead()</code> を行います。</p>
+<h3 id=stack-側>Stack 側</h3>
+<p>CDK の方では、Lambda に読み込みを許可するパラメータ名を <code>KEY_NAME</code> などの環境変数で渡しつつ、<code>grantRead()</code> を行います。</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>/// lib/xyz-stack.ts
 </span><span style=color:#75715e></span>
 <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>KEY_NAME</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;/awesome-app/external_key&#39;</span>;
@@ -86,7 +85,7 @@ CDKで簡単にその権限をLambdaに指定することができます。</p>
       <span style=color:#a6e22e>handler</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;handler&#34;</span>,
       <span style=color:#a6e22e>environment</span><span style=color:#f92672>:</span> {
         <span style=color:#a6e22e>KEY_NAME</span>: <span style=color:#66d9ef>KEY_NAME</span>,
-      },      
+      },
     });
 
     <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>secureStringParameter</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>StringParameter</span>.<span style=color:#a6e22e>fromSecureStringParameterAttributes</span>(<span style=color:#66d9ef>this</span>, <span style=color:#e6db74>&#39;AwesomeKey&#39;</span>, {
@@ -96,15 +95,15 @@ CDKで簡単にその権限をLambdaに指定することができます。</p>
     <span style=color:#a6e22e>secureStringParameter</span>.<span style=color:#a6e22e>grantRead</span>(<span style=color:#a6e22e>myLambda</span>);
 
 ...
-</code></pre></div><p>SecureStringの場合 <code>version: 1</code> というようにVersion番号が必須です。
-Version番号は、管理コンソールで以下に書かれている数字のことです。
+</code></pre></div><p>SecureString の場合 <code>version: 1</code> というように Version 番号が必須です。
+Version 番号は、管理コンソールで以下に書かれている数字のことです。
 <figure class=center><img src=./parameter_version.png><figcaption>
 <h4>Parameter Version</h4>
 </figcaption>
 </figure>
 </p>
-<h3 id=lambda側>Lambda側</h3>
-<p>Lambdaでは <code>env.KEY_NAME</code> からパラメータ名を取得して SSMを使って読み出します。
+<h3 id=lambda-側>Lambda 側</h3>
+<p>Lambda では <code>env.KEY_NAME</code> からパラメータ名を取得して SSM を使って読み出します。
 <code>aws-sdk</code> を使うので <code>npm install aws-sdk</code> しておく必要があります。</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>/// lib/lambda/main.ts
 </span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>env</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;process&#34;</span>;

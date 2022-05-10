@@ -5,7 +5,7 @@
 <meta http-equiv=x-ua-compatible content="IE=edge">
 <title>SwiftUI で ファイルを外部にShareするには - My First Step</title>
 <script>(function(a,b){a[b]=a[b].replace("no-js","js")})(document.documentElement,"className")</script>
-<meta name=description content="SwiftUI で ファイルを外部にShareする方法のメモです">
+<meta name=description content>
 <meta property="og:title" content="SwiftUI で ファイルを外部にShareするには">
 <meta property="og:description" content="SwiftUI で ファイルを外部にShareする方法のメモです">
 <meta property="og:type" content="article">
@@ -15,7 +15,7 @@
 <meta itemprop=name content="SwiftUI で ファイルを外部にShareするには">
 <meta itemprop=description content="SwiftUI で ファイルを外部にShareする方法のメモです"><meta itemprop=datePublished content="2022-01-07T00:00:00+00:00">
 <meta itemprop=dateModified content="2022-01-07T00:00:00+00:00">
-<meta itemprop=wordCount content="761">
+<meta itemprop=wordCount content="747">
 <meta itemprop=keywords content="swift,swiftui,">
 <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
 <link rel=dns-prefetch href=//fonts.googleapis.com>
@@ -48,7 +48,6 @@
 <article class=post>
 <header class=post__header>
 <h1 class=post__title>SwiftUI で ファイルを外部にShareするには</h1>
-<p class=post__lead>SwiftUI で ファイルを外部にShareする方法のメモ</p>
 <div class="post__meta meta">
 <div class="meta__item-datetime meta__item">
 <svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2022-01-07T00:00:00Z>2022-01-07</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2 1 2h8v11H0V2z"/></svg><span class=meta__text><a class=meta__link href=/ja/categories/swift/ rel=category>swift</a>
@@ -73,7 +72,7 @@
 </nav>
 </div>
 </div><div class="content post__content clearfix">
-<p>以下のような感じでSwiftUI で アプリケーション内部のファイルを外部にShareする方法です。
+<p>以下のような感じで SwiftUI で アプリケーション内部のファイルを外部に Share する方法です。
 <code>UIActivityViewController</code> を使うんだろうな、というのは少しググるとわかるのですが SwiftUI 初心者には具体的にどう書いたら良いかわからなかったので書き残しておきます。
 <figure class=center><img src=./image.jpeg width=250><figcaption>
 <h4>ファイル共有機能の呼び出しイメージ</h4>
@@ -96,7 +95,7 @@
     <span style=color:#66d9ef>var</span> activityItems: [Any]
     <span style=color:#66d9ef>var</span> applicationActivities: [UIActivity]? = <span style=color:#66d9ef>nil</span>
     <span style=color:#66d9ef>var</span> completionHandler: ((Bool) -&gt; Void)? = <span style=color:#66d9ef>nil</span>
-    
+
     <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>makeUIViewController</span>(context: UIViewControllerRepresentableContext&lt;<span style=color:#66d9ef>Self</span>&gt;) -&gt; UIActivityViewController {
         <span style=color:#66d9ef>let</span> controller = UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
         <span style=color:#66d9ef>if</span> <span style=color:#66d9ef>self</span>.completionHandler <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
@@ -106,7 +105,7 @@
         }
         <span style=color:#66d9ef>return</span> controller
     }
-    
+
     <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>updateUIViewController</span>(<span style=color:#66d9ef>_</span> uiViewController: UIActivityViewController, context: UIViewControllerRepresentableContext&lt;<span style=color:#66d9ef>Self</span>&gt;) {}
 }
 </code></pre></div><p><code>completionHandler</code> は、共有が終わったら呼び出されます(今回は使わなかったですが…)。</p>
@@ -132,9 +131,9 @@
     <span style=color:#66d9ef>return</span> ActivityViewController(activityItems: [url])
 }
 </code></pre></div><h2 id=case2-swiftui-で-uiactivityviewcontroller-を呼び出す方法ファイル名を指定したい場合>Case2: SwiftUI で UIActivityViewController を呼び出す方法(ファイル名を指定したい場合)</h2>
-<p>共有されるときのファイル名を指定したい場合があります。が、APIで指定することはできないようです。
+<p>共有されるときのファイル名を指定したい場合があります。が、API で指定することはできないようです。
 代わりに、ファイル名がデフォルトの共有ファイル名になるので、事前にコピーして、終わったら削除すれば一応実現できます。
-ちなみに、Symlinkではダメでした。</p>
+ちなみに、Symlink ではダメでした。</p>
 <p>先程の <code>createFileShareView</code> を以下のようにするとできるようになります。</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift>
 ...<span style=color:#960050;background-color:#1e0010>略</span>
@@ -158,10 +157,10 @@
                 <span style=color:#66d9ef>try</span>! FileManager.<span style=color:#66d9ef>default</span>.removeItem(at: newUrl)
             }
         }
-}    
+}
 </code></pre></div><p><code>.onDisappear()</code> でコピーしたファイルを消すのが一つポイントです。
-<code>ActivityViewController</code> の <code>completionHandler</code> で消してしまうと、1回のSheet表示中にユーザーが何度も共有しようとした場合に、
-1回目の終了後にファイルが消えてしまうので2回目以降が失敗してしまいます。</p>
+<code>ActivityViewController</code> の <code>completionHandler</code> で消してしまうと、1 回の Sheet 表示中にユーザーが何度も共有しようとした場合に、
+1 回目の終了後にファイルが消えてしまうので 2 回目以降が失敗してしまいます。</p>
 <h2 id=参考>参考</h2>
 <ul>
 <li><a href=https://developer.apple.com/documentation/uikit/uiactivityviewcontroller>UIActivityViewController</a></li>

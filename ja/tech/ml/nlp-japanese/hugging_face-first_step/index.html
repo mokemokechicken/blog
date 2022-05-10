@@ -15,7 +15,7 @@
 <meta itemprop=name content="HuggingFace で日本語モデルを使ってみる">
 <meta itemprop=description content="Bert など事前学習済み日本語モデルを環境構築からMaskされた単語の推定タスクの最初の出力までを行いました。"><meta itemprop=datePublished content="2021-12-23T00:00:00+00:00">
 <meta itemprop=dateModified content="2021-12-23T00:00:00+00:00">
-<meta itemprop=wordCount content="1547">
+<meta itemprop=wordCount content="1483">
 <meta itemprop=keywords content="ML,NLP,BERT,transformers,HuggingFace,Python,">
 <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
 <link rel=dns-prefetch href=//fonts.googleapis.com>
@@ -78,14 +78,14 @@
 </nav>
 </div>
 </div><div class="content post__content clearfix">
-<p>クロスワードパズルとかNLPでできるのかなーとちょっと思ったので、最近流行りの HuggingFace を試してみました。
+<p>クロスワードパズルとか NLP でできるのかなーとちょっと思ったので、最近流行りの HuggingFace を試してみました。
 どうやら事前学習済みの日本語モデルが数行書くだけで試せる時代になったようです。</p>
 <h2 id=環境構築>環境構築</h2>
 <p>今回は <code>pyenv</code> を使って <code>Python3.9</code> 系に <code>poetry</code> を使って色々 Install していきます。</p>
 <h3 id=前提環境>前提環境</h3>
 <ul>
 <li>MacBook Pro(M1), OS: Monterey(12.0.1)</li>
-<li><code>brew</code> は Install済みとします</li>
+<li><code>brew</code> は Install 済みとします</li>
 <li><code>pyenv</code>: <code>2.2.2</code>
 <ul>
 <li>もしまだ Install されていなければ、 <code>brew install pyenv</code> で Install できます</li>
@@ -105,18 +105,18 @@ pyenv local 3.9.9
 poetry init -n --python <span style=color:#e6db74>&#39;&gt;=3.9,&lt;3.10&#39;</span>
 </code></pre></div><p>上記のように <code>--python '>=3.9,&lt;3.10'</code> としておくのは大事で、そうしないと <code>poetry add numpy</code> がバージョン互換性のために失敗してしまいます。</p>
 <hr>
-<p><code>numpy</code>, <code>torch</code>, <code>transformers</code> をInstallします。
-ちょっと前までは M1 Mac にこれらをInstallするのが難航したものですが、今は簡単に入りますね。</p>
+<p><code>numpy</code>, <code>torch</code>, <code>transformers</code> を Install します。
+ちょっと前までは M1 Mac にこれらを Install するのが難航したものですが、今は簡単に入りますね。</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>poetry add numpy torch transformers
 </code></pre></div><hr>
 <p>今回使う <a href=https://huggingface.co/cl-tohoku/bert-base-japanese-char-v2>bert-base-japanese-char-v2</a> が
-<code>mecab</code>, <code>fugashi</code>, <code>unidic_lite</code> を必要とするので、これもInstallします。
+<code>mecab</code>, <code>fugashi</code>, <code>unidic_lite</code> を必要とするので、これも Install します。
 どの言語モデルがどういうライブラリを要求するかは色々あるので、
-実際は「何かエラーが出たら追加でInstallする」という感じになると思います。</p>
-<p>※ わざわざ再現するのもあれなので最初からInstallします。</p>
+実際は「何かエラーが出たら追加で Install する」という感じになると思います。</p>
+<p>※ わざわざ再現するのもあれなので最初から Install します。</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>brew install mecab
 poetry add fugashi unidic_lite
-</code></pre></div><p>最終的にInstallされていたバージョンは以下の通りです。</p>
+</code></pre></div><p>最終的に Install されていたバージョンは以下の通りです。</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-toml data-lang=toml><span style=color:#a6e22e>numpy</span> = <span style=color:#e6db74>&#34;^1.21.5&#34;</span>
 <span style=color:#a6e22e>torch</span> = <span style=color:#e6db74>&#34;^1.10.1&#34;</span>
 <span style=color:#a6e22e>transformers</span> = <span style=color:#e6db74>&#34;^4.15.0&#34;</span>
@@ -131,7 +131,7 @@ poetry add fugashi unidic_lite
 では、１文字分の予測結果を返すことになります。
 クロスワードパズルとかできそうですね。</p>
 <h3 id=サンプルコード>サンプルコード</h3>
-<p>以下のようなコードで 「私は◯です。」 の 「◯」の部分を予測させることができます。</p>
+<p>以下のようなコードで 「私は ◯ です。」 の 「◯」の部分を予測させることができます。</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#75715e># play.py</span>
 <span style=color:#f92672>from</span> pprint <span style=color:#f92672>import</span> pprint
 
@@ -164,9 +164,9 @@ pprint(pipe(text, top_k<span style=color:#f92672>=</span><span style=color:#ae81
 <h3 id=いろいろ遊べる部分>いろいろ遊べる部分</h3>
 <ul>
 <li>言語モデルは <a href=https://huggingface.co/models>Hugging Face Models</a> の中から選んで指定できます。ただし、モデルによって必要なライブラリが違うので、エラ
-ーが出たらその名前から適当にInstallしてみると良いでしょう。キーワードはたいていモデル説明ページのドキュメントにも書いてあることが多いです。</li>
+ーが出たらその名前から適当に Install してみると良いでしょう。キーワードはたいていモデル説明ページのドキュメントにも書いてあることが多いです。</li>
 <li><code>top_k=3</code> の部分で上位いくつの結果を返すかを指定できます。</li>
-<li><code>pipe(text, targets=["嘘", "馬", "前", "橘", "上"])</code> というように <code>targets</code> で指定した単語のscoreを返してくれます。
+<li><code>pipe(text, targets=["嘘", "馬", "前", "橘", "上"])</code> というように <code>targets</code> で指定した単語の score を返してくれます。
 <pre tabindex=0><code>[{'score': 0.007146810181438923,
 'sequence': '今 日 は 休 み な の で 、 私 は 嘘 で す 。',
 'token': 1681,
@@ -188,7 +188,7 @@ pprint(pipe(text, top_k<span style=color:#f92672>=</span><span style=color:#ae81
 'token': 3049,
 'token_str': '橘'}]
 </code></pre></li>
-<li>色々な言語タスクに対応した <code>pipeline</code> があって、それらはこんな感じで簡単に使えます。各pipeline の説明は、<a href=https://note.com/npaka/n/n5bb043191cc9>この方のNote</a> がとてもわかりやすかったです。</li>
+<li>色々な言語タスクに対応した <code>pipeline</code> があって、それらはこんな感じで簡単に使えます。各 pipeline の説明は、<a href=https://note.com/npaka/n/n5bb043191cc9>この方の Note</a> がとてもわかりやすかったです。</li>
 </ul>
 <h2 id=さいごに>さいごに</h2>
 <p>使うだけならここまでお手軽に使えるようです。

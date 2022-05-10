@@ -5,7 +5,7 @@
 <meta http-equiv=x-ua-compatible content="IE=edge">
 <title>AWS CDK(v2): Linking Lambda and APIGateway - My First Step</title>
 <script>(function(a,b){a[b]=a[b].replace("no-js","js")})(document.documentElement,"className")</script>
-<meta name=description content="A note on using AWS CDK V2 to link Lambda and APIGateway">
+<meta name=description content>
 <meta property="og:title" content="AWS CDK(v2): Linking Lambda and APIGateway">
 <meta property="og:description" content="A note on using AWS CDK V2 to link Lambda and APIGateway">
 <meta property="og:type" content="article">
@@ -15,7 +15,7 @@
 <meta itemprop=name content="AWS CDK(v2): Linking Lambda and APIGateway">
 <meta itemprop=description content="A note on using AWS CDK V2 to link Lambda and APIGateway"><meta itemprop=datePublished content="2021-12-20T00:00:00+00:00">
 <meta itemprop=dateModified content="2021-12-20T00:00:00+00:00">
-<meta itemprop=wordCount content="835">
+<meta itemprop=wordCount content="843">
 <meta itemprop=keywords content="AWS CDK v2,TypeScript,AWSLambda,APIGateway,">
 <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
 <link rel=dns-prefetch href=//fonts.googleapis.com>
@@ -48,7 +48,6 @@
 <article class=post>
 <header class=post__header>
 <h1 class=post__title>AWS CDK(v2): Linking Lambda and APIGateway</h1>
-<p class=post__lead>A note on using AWS CDK V2 to link Lambda and APIGateway</p>
 <div class="post__meta meta">
 <div class="meta__item-datetime meta__item">
 <svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2021-12-20T00:00:00Z>2021-12-20</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2 1 2h8v11H0V2z"/></svg><span class=meta__text><a class=meta__link href=/en/categories/aws-cdk-v2/ rel=category>AWS CDK v2</a>
@@ -115,8 +114,8 @@ This will create the various typescript.</p>
 % cdk init --language typescript
 </code></pre></div><p>A file for <code>CowSayStack</code> will be created in <code>lib/cow_say-stack.ts</code>, and you can write various things here in the end.</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>/// lib/cow_say-stack.ts
-</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Stack</span>, <span style=color:#a6e22e>StackProps</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;aws-cdk-lib&#39;</span>;
-<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Construct</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;constructs&#39;</span>;
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Stack</span>, <span style=color:#a6e22e>StackProps</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Construct</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;constructs&#34;</span>;
 <span style=color:#75715e>// import * as sqs from &#39;aws-cdk-lib/aws-sqs&#39;;
 </span><span style=color:#75715e></span>
 <span style=color:#66d9ef>export</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>CowSayStack</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Stack</span> {
@@ -139,32 +138,32 @@ This will create the various typescript.</p>
 The code itself is simple.
 It converts the <code>text</code> value of the QueryString parameter of a <code>GET</code> request from API Gateway with <code>cowsay</code> and returns it as is.</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>/// lib/lambda/main.ts
-</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>cowsay</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;cowsay&#39;</span>;
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>cowsay</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;cowsay&#34;</span>;
 
 <span style=color:#66d9ef>export</span> <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>handler</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>async</span> (<span style=color:#a6e22e>event</span>: <span style=color:#66d9ef>any</span> <span style=color:#f92672>=</span> {})<span style=color:#f92672>:</span> <span style=color:#a6e22e>Promise</span>&lt;<span style=color:#f92672>any</span>&gt; <span style=color:#f92672>=&gt;</span> {
-    <span style=color:#66d9ef>try</span> {
-        <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>statusCode</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>200</span>;
-        <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>text</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>queryStringParameters</span><span style=color:#f92672>?</span>.<span style=color:#a6e22e>text</span> <span style=color:#f92672>??</span> <span style=color:#e6db74>&#39;Hello!&#39;</span>;
-        <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>said</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>cowsay</span>.<span style=color:#a6e22e>say</span>({<span style=color:#a6e22e>text</span>: <span style=color:#66d9ef>text</span>});
-        <span style=color:#66d9ef>return</span> { <span style=color:#a6e22e>statusCode</span>: <span style=color:#66d9ef>statusCode</span>, <span style=color:#a6e22e>body</span>: <span style=color:#66d9ef>said</span> };
-} <span style=color:#66d9ef>catch</span> (<span style=color:#a6e22e>error</span>) {
-        <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>error</span>);
-        <span style=color:#66d9ef>return</span> { <span style=color:#a6e22e>statusCode</span>: <span style=color:#66d9ef>500</span>, <span style=color:#a6e22e>body</span>: <span style=color:#66d9ef>JSON.stringify</span>({<span style=color:#a6e22e>message</span><span style=color:#f92672>:</span> <span style=color:#e6db74>`</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>error</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>})};
-    }
+  <span style=color:#66d9ef>try</span> {
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>statusCode</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>200</span>;
+    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>text</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>event</span>.<span style=color:#a6e22e>queryStringParameters</span><span style=color:#f92672>?</span>.<span style=color:#a6e22e>text</span> <span style=color:#f92672>??</span> <span style=color:#e6db74>&#34;Hello!&#34;</span>;
+    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>said</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>cowsay</span>.<span style=color:#a6e22e>say</span>({ <span style=color:#a6e22e>text</span>: <span style=color:#66d9ef>text</span> });
+    <span style=color:#66d9ef>return</span> { <span style=color:#a6e22e>statusCode</span>: <span style=color:#66d9ef>statusCode</span>, <span style=color:#a6e22e>body</span>: <span style=color:#66d9ef>said</span> };
+  } <span style=color:#66d9ef>catch</span> (<span style=color:#a6e22e>error</span>) {
+    <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>error</span>);
+    <span style=color:#66d9ef>return</span> { <span style=color:#a6e22e>statusCode</span>: <span style=color:#66d9ef>500</span>, <span style=color:#a6e22e>body</span>: <span style=color:#66d9ef>JSON.stringify</span>({ <span style=color:#a6e22e>message</span><span style=color:#f92672>:</span> <span style=color:#e6db74>`</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>error</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span> }) };
+  }
 };
 </code></pre></div><h4 id=unittest>UnitTest</h4>
 <p>I didn&rsquo;t know how to write good tests for Lambda, but since <code>jest</code> is included from the beginning, for example, you can run UnitTest by doing the following</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>/// test/lambda/main.test.ts
-</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>main</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;../../lib/lambda/main&#39;</span>;
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>main</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;../../lib/lambda/main&#34;</span>;
 
-<span style=color:#a6e22e>test</span>(<span style=color:#e6db74>&#34;call handler&#34;</span>, <span style=color:#66d9ef>async</span>() <span style=color:#f92672>=&gt;</span> {
-    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>event</span> <span style=color:#f92672>=</span> {
-        <span style=color:#a6e22e>queryStringParameters</span><span style=color:#f92672>:</span> {<span style=color:#a6e22e>text</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;Hello!&#34;</span>},
-    };
-    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>response</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>main</span>.<span style=color:#a6e22e>handler</span>(<span style=color:#a6e22e>event</span>);
-    <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>response</span>.<span style=color:#a6e22e>statusCode</span>).<span style=color:#a6e22e>toBe</span>(<span style=color:#ae81ff>200</span>);
-    <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>response</span>.<span style=color:#a6e22e>body</span>);
-})
+<span style=color:#a6e22e>test</span>(<span style=color:#e6db74>&#34;call handler&#34;</span>, <span style=color:#66d9ef>async</span> () <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>event</span> <span style=color:#f92672>=</span> {
+    <span style=color:#a6e22e>queryStringParameters</span><span style=color:#f92672>:</span> { <span style=color:#a6e22e>text</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;Hello!&#34;</span> },
+  };
+  <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>response</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>main</span>.<span style=color:#a6e22e>handler</span>(<span style=color:#a6e22e>event</span>);
+  <span style=color:#a6e22e>expect</span>(<span style=color:#a6e22e>response</span>.<span style=color:#a6e22e>statusCode</span>).<span style=color:#a6e22e>toBe</span>(<span style=color:#ae81ff>200</span>);
+  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>response</span>.<span style=color:#a6e22e>body</span>);
+});
 </code></pre></div><p>You can also run it with <code>npm run test</code>.
 With VSCode, you can run a specific test with just a click.</p>
 <figure class=center><img src=./launch_test_by_vscode.png width=50%><figcaption>
@@ -179,11 +178,11 @@ With VSCode, you can run a specific test with just a click.</p>
 <p>In this case, we just need to be able to call Lambda from the APIGateway, so we can write it as follows.
 The point is to use <a href=https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_lambda_nodejs.NodejsFunction.html>NodejsFunction</a> for NodeJS. It will take care of the packaging including TypeScript Transpile and node module.</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>/// lib/cow_say-stack.ts
-</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Stack</span>, <span style=color:#a6e22e>StackProps</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;aws-cdk-lib&#39;</span>;
-<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>LambdaIntegration</span>, <span style=color:#a6e22e>RestApi</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;aws-cdk-lib/aws-apigateway&#39;</span>;
-<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>NodejsFunction</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;aws-cdk-lib/aws-lambda-nodejs&#39;</span>;
-<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Construct</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;constructs&#39;</span>;
-<span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>path</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;path&#39;</span>;
+</span><span style=color:#75715e></span><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Stack</span>, <span style=color:#a6e22e>StackProps</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>LambdaIntegration</span>, <span style=color:#a6e22e>RestApi</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib/aws-apigateway&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>NodejsFunction</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib/aws-lambda-nodejs&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Construct</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;constructs&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>path</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;path&#34;</span>;
 
 <span style=color:#66d9ef>export</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>CowSayStack</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Stack</span> {
   <span style=color:#66d9ef>constructor</span>(<span style=color:#a6e22e>scope</span>: <span style=color:#66d9ef>Construct</span>, <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>string</span>, <span style=color:#a6e22e>props?</span>: <span style=color:#66d9ef>StackProps</span>) {
@@ -192,7 +191,7 @@ The point is to use <a href=https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-
     <span style=color:#75715e>// https://aws.amazon.com/jp/blogs/news/lambda-managed-by-cdk/
 </span><span style=color:#75715e></span>    <span style=color:#75715e>// For only NodeJS, Golang and Python now
 </span><span style=color:#75715e></span>    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>cowLambda</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>NodejsFunction</span>(<span style=color:#66d9ef>this</span>, <span style=color:#e6db74>&#34;CowSay&#34;</span>, {
-      <span style=color:#a6e22e>entry</span>: <span style=color:#66d9ef>path.join</span>(<span style=color:#a6e22e>__dirname</span>, <span style=color:#e6db74>&#39;./lambda/main.ts&#39;</span>),
+      <span style=color:#a6e22e>entry</span>: <span style=color:#66d9ef>path.join</span>(<span style=color:#a6e22e>__dirname</span>, <span style=color:#e6db74>&#34;./lambda/main.ts&#34;</span>),
       <span style=color:#a6e22e>handler</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;handler&#34;</span>,
     });
 
