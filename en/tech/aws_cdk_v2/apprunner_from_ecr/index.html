@@ -1,0 +1,207 @@
+<!doctype html><html class=no-js lang=en>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title>Deploy Image on ECR to AWS App Runner with AWS CDK V2 - My First Step</title>
+<script>(function(a,b){a[b]=a[b].replace("no-js","js")})(document.documentElement,"className")</script>
+<meta name=description content>
+<meta property="og:title" content="Deploy Image on ECR to AWS App Runner with AWS CDK V2">
+<meta property="og:description" content="Deploy Image on ECR to AWS App Runner with AWS CDK V2">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://blog.my-first-step.info/en/tech/aws_cdk_v2/apprunner_from_ecr/"><meta property="article:section" content="tech">
+<meta property="article:published_time" content="2022-01-20T00:00:00+00:00">
+<meta property="article:modified_time" content="2022-01-20T00:00:00+00:00"><meta property="og:site_name" content="My First Step">
+<meta itemprop=name content="Deploy Image on ECR to AWS App Runner with AWS CDK V2">
+<meta itemprop=description content="Deploy Image on ECR to AWS App Runner with AWS CDK V2"><meta itemprop=datePublished content="2022-01-20T00:00:00+00:00">
+<meta itemprop=dateModified content="2022-01-20T00:00:00+00:00">
+<meta itemprop=wordCount content="364">
+<meta itemprop=keywords content="AWS CDK v2,App Runner,">
+<link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+<link rel=dns-prefetch href=//fonts.googleapis.com>
+<link rel=dns-prefetch href=//fonts.gstatic.com>
+<link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+<link rel=stylesheet href=/css/style.css>
+<link rel=stylesheet href=/css/my-style.css>
+<link rel="shortcut icon" href=/favicon.ico>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SV0KGCR6DC"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-SV0KGCR6DC',{anonymize_ip:!1})}</script>
+<script data-ad-client=ca-pub-9110784429846069 async src=https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js></script>
+</head>
+<body class=body>
+<div class="container container--outer">
+<header class=header>
+<div class="container header__container">
+<div class=logo>
+<a class=logo__link href=/en/ title="My First Step" rel=home>
+<div class="logo__item logo__text">
+<div class=logo__title>My First Step</div>
+</div>
+</a>
+</div>
+<div class=divider></div>
+</div>
+</header>
+<div class="wrapper flex">
+<div class=primary>
+<main class=main role=main>
+<article class=post>
+<header class=post__header>
+<h1 class=post__title>Deploy Image on ECR to AWS App Runner with AWS CDK V2</h1>
+<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2022-01-20T00:00:00Z>2022-01-20</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2 1 2h8v11H0V2z"/></svg><span class=meta__text><a class=meta__link href=/en/categories/aws-cdk-v2/ rel=category>AWS CDK v2</a>
+</span>
+</div>
+<div class="meta__item-translations meta__item">
+<span class=meta__text>Translations: <a class=meta__link href=/ja/tech/aws_cdk_v2/apprunner_from_ecr/>JA</a>
+</span>
+</div></div>
+</header>
+<div class="post__toc toc">
+<div class=toc__title>Page content</div>
+<div class=toc__menu>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#version>Version</a></li>
+<li><a href=#how-to-write-with-aws-cdk-v2>How To Write with AWS CDK v2</a></li>
+<li><a href=#reference>Reference</a></li>
+</ul>
+</nav>
+</div>
+</div><div class="content post__content clearfix">
+<p><a href=https://aws.amazon.com/jp/apprunner/>AWS App Runner</a> makes it easy to deploy a Web Server as long as it is a Docker container.</p>
+<p>What&rsquo;s more,</p>
+<ul>
+<li>Automatic redeployment of the ECR image when it is updated (or not automatic, of course).</li>
+<li>AutoScale and custom domains can also be configured.</li>
+<li>You can view metrics such as number of accesses, latency, number of instances, etc. without any configuration.</li>
+<li>Application logs can also be viewed automatically.</li>
+</ul>
+<p>It&rsquo;s all there. It will be very useful when you want to deploy a small web service.</p>
+<p>Once you get used to it, it&rsquo;s not that much trouble to set it up manually.
+However, since it is likely to be used many times in the future, I will summarize how to write with AWS CDK V2.</p>
+<h2 id=version>Version</h2>
+<ul>
+<li><code>node</code>: <code>16.13.1</code></li>
+<li><code>aws-cdk</code>: <code>2.8.0 (build 8a5eb49)</code></li>
+<li><code>tsc</code>: <code>4.5.4</code></li>
+</ul>
+<h2 id=how-to-write-with-aws-cdk-v2>How To Write with AWS CDK v2</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Stack</span>, <span style=color:#a6e22e>StackProps</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Construct</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;constructs&#34;</span>;
+
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>CfnService</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib/aws-apprunner&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Role</span>, <span style=color:#a6e22e>ServicePrincipal</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib/aws-iam&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>StringParameter</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib/aws-ssm&#34;</span>;
+
+<span style=color:#75715e>// Image URI to deploy
+</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>IMAGE_URI</span> <span style=color:#f92672>=</span>
+  <span style=color:#e6db74>&#34;99999999999.dkr.ecr.ap-northeast-1.amazonaws.com/my-web-app:release&#34;</span>;
+
+<span style=color:#66d9ef>export</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>MyWebAppStack</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Stack</span> {
+  <span style=color:#66d9ef>constructor</span>(<span style=color:#a6e22e>scope</span>: <span style=color:#66d9ef>Construct</span>, <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>string</span>, <span style=color:#a6e22e>props?</span>: <span style=color:#66d9ef>StackProps</span>) {
+    <span style=color:#66d9ef>super</span>(<span style=color:#a6e22e>scope</span>, <span style=color:#a6e22e>id</span>, <span style=color:#a6e22e>props</span>);
+
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>buildRole</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>createECRRole</span>();
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>taskRole</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>createTaskRole</span>();
+
+    <span style=color:#75715e>// AWS::AppRunner::Service
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>appService</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>CfnService</span>(<span style=color:#66d9ef>this</span>, <span style=color:#e6db74>&#34;MyWebApp&#34;</span>, {
+      <span style=color:#a6e22e>serviceName</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;MyWebApp&#34;</span>,
+      <span style=color:#a6e22e>sourceConfiguration</span><span style=color:#f92672>:</span> {
+        <span style=color:#a6e22e>authenticationConfiguration</span><span style=color:#f92672>:</span> {
+          <span style=color:#a6e22e>accessRoleArn</span>: <span style=color:#66d9ef>buildRole.roleArn</span>, <span style=color:#75715e>// Role when accessing ECR?
+</span><span style=color:#75715e></span>        },
+        <span style=color:#a6e22e>imageRepository</span><span style=color:#f92672>:</span> {
+          <span style=color:#a6e22e>imageIdentifier</span>: <span style=color:#66d9ef>IMAGE_URI</span>,
+          <span style=color:#a6e22e>imageRepositoryType</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;ECR&#34;</span>,
+          <span style=color:#a6e22e>imageConfiguration</span><span style=color:#f92672>:</span> {
+            <span style=color:#a6e22e>port</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;8080&#34;</span>, <span style=color:#75715e>// Listen Port
+</span><span style=color:#75715e></span>            <span style=color:#a6e22e>runtimeEnvironmentVariables</span><span style=color:#f92672>:</span> [
+              <span style=color:#75715e>// Runtime Environment Variables
+</span><span style=color:#75715e></span>              { <span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;PRODUCTION&#34;</span>, <span style=color:#a6e22e>value</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;1&#34;</span> },
+            ],
+            <span style=color:#a6e22e>startCommand</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;web&#34;</span>, <span style=color:#75715e>// Commands when launching container execution
+</span><span style=color:#75715e></span>          },
+        },
+        <span style=color:#a6e22e>autoDeploymentsEnabled</span>: <span style=color:#66d9ef>true</span>, <span style=color:#75715e>// AutoDeploy when images pushed to ECR
+</span><span style=color:#75715e></span>      },
+      <span style=color:#a6e22e>instanceConfiguration</span><span style=color:#f92672>:</span> {
+        <span style=color:#a6e22e>cpu</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;1 vCPU&#34;</span>,
+        <span style=color:#a6e22e>memory</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;2 GB&#34;</span>,
+        <span style=color:#a6e22e>instanceRoleArn</span>: <span style=color:#66d9ef>taskRole.roleArn</span>,
+      },
+    });
+  }
+
+  <span style=color:#a6e22e>createECRRole</span>()<span style=color:#f92672>:</span> <span style=color:#a6e22e>Role</span> {
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>role</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Role</span>(<span style=color:#66d9ef>this</span>, <span style=color:#e6db74>&#34;MyWebAppECRRole&#34;</span>, {
+      <span style=color:#a6e22e>assumedBy</span>: <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>ServicePrincipal</span>(<span style=color:#e6db74>&#34;build.apprunner.amazonaws.com&#34;</span>),
+    });
+    <span style=color:#a6e22e>role</span>.<span style=color:#a6e22e>addManagedPolicy</span>({
+      <span style=color:#a6e22e>managedPolicyArn</span><span style=color:#f92672>:</span>
+        <span style=color:#e6db74>&#34;arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess&#34;</span>,
+    });
+    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>role</span>;
+  }
+
+  <span style=color:#75715e>// Create a runtime Role. Define as needed.
+</span><span style=color:#75715e></span>  <span style=color:#a6e22e>createTaskRole</span>()<span style=color:#f92672>:</span> <span style=color:#a6e22e>Role</span> {
+    <span style=color:#75715e>// Create Role for AppRunner Task
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>taskRole</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Role</span>(<span style=color:#66d9ef>this</span>, <span style=color:#e6db74>&#34;MyWebAppTaskRole&#34;</span>, {
+      <span style=color:#a6e22e>assumedBy</span>: <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>ServicePrincipal</span>(<span style=color:#e6db74>&#34;tasks.apprunner.amazonaws.com&#34;</span>),
+    });
+
+    <span style=color:#75715e>// SSM&#39;s access rights to SecureString
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>googleJson</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>StringParameter</span>.<span style=color:#a6e22e>fromSecureStringParameterAttributes</span>(
+      <span style=color:#66d9ef>this</span>,
+      <span style=color:#e6db74>&#34;google-json&#34;</span>,
+      {
+        <span style=color:#a6e22e>parameterName</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;/shared/google.json&#34;</span>,
+        <span style=color:#a6e22e>version</span>: <span style=color:#66d9ef>1</span>,
+      }
+    );
+
+    <span style=color:#75715e>// Grant
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>googleJson</span>.<span style=color:#a6e22e>grantRead</span>(<span style=color:#a6e22e>taskRole</span>);
+
+    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>taskRole</span>;
+  }
+}
+</code></pre></div><h2 id=reference>Reference</h2>
+<ul>
+<li><a href=https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apprunner-service.html>AWS::AppRunner::Service</a></li>
+</ul>
+</div>
+<footer class=post__footer>
+<div class="post__tags tags clearfix"><svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5.0 11V3C0 1.5.8.8.8.8S1.5.0 3 0h8c1.5.0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 100-6 3 3 0 000 6z"/></svg>
+<ul class=tags__list>
+<li class=tags__item>
+<a class="tags__link btn" href=/en/tags/aws-cdk-v2/ rel=tag>AWS CDK v2</a>
+</li>
+<li class=tags__item>
+<a class="tags__link btn" href=/en/tags/app-runner/ rel=tag>App Runner</a>
+</li>
+</ul>
+</div>
+</footer>
+</article>
+</main>
+</div>
+</div>
+<footer class=footer>
+<div class="container footer__container flex">
+<div class=footer__links>
+<a class=footer__link href=/en/etc/my_first_step/>About This Blog</a>
+</div>
+<div class=footer__copyright>
+&copy; 2022 Mokemokechicken.
+<span class=footer__copyright-credits>Generated with <a href=https://gohugo.io/ rel="nofollow noopener" target=_blank>Hugo</a> and <a href=https://github.com/Vimux/Mainroad/ rel="nofollow noopener" target=_blank>Mainroad</a> theme.</span>
+</div>
+</div>
+</footer>
+</div>
+<script async defer src=/js/menu.js></script>
+</body>
+</html>
