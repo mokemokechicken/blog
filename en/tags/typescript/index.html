@@ -46,6 +46,50 @@
 </header><article class="list__item post">
 <header class=list__header>
 <h2 class="list__title post__title">
+<a href=/en/tech/aws_cdk_v2/step_functions__batch_submit_job_with_context/ rel=bookmark>
+AWS CDK(v2) BatchSubmitJob in StepFunctions to dynamically overwrite commands from Context and Input
+</a>
+</h2>
+<p class="list__lead post__lead">How to use AWS CDK V2 to dynamically overwrite commands from Context and Input with BatchSubmitJob in StepFunctions.</p>
+<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2022-04-20T00:00:00Z>2022-04-20</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2 1 2h8v11H0V2z"/></svg><span class=meta__text><a class=meta__link href=/en/categories/aws-cdk-v2/ rel=category>AWS CDK v2</a>
+</span>
+</div>
+<div class="meta__item-translations meta__item">
+<span class=meta__text>Translations: <a class=meta__link href=/ja/tech/aws_cdk_v2/step_functions__batch_submit_job_with_context/>JA</a>
+</span>
+</div></div>
+</header>
+<div class="content list__excerpt post__content clearfix">
+Introduction When executing AWSBatch from StepFunctions in AWS CDK, it is convenient to use BatchSubmitJob, but I could not find out how to overwrite containerOverrides.command, so I have written it down.
+Version aws-cdk: 2.20.0 How to dynamically overwrite command from Context or Input with BatchSubmitJob There is a aws_stepfunctions.JsonPath, and if string[] is an expected parameter, you can use JsonPath.listAt(JSON_PATH). There are also JsonPath.numberAt(JSON_PATH) and stringAt().
+Thus, for example, you can write as followings.
+</div>
+</article><article class="list__item post">
+<header class=list__header>
+<h2 class="list__title post__title">
+<a href=/en/tech/aws_cdk_v2/step_functions__lambda_task_with_context/ rel=bookmark>
+AWS CDK(v2) LambdaInvoke in StepFunctions to dynamically override Payload from Context or Input
+</a>
+</h2>
+<p class="list__lead post__lead">AWS CDK(v2) LambdaInvoke in StepFunctions to dynamically override Payload from Context or Input</p>
+<div class="list__meta meta">
+<div class="meta__item-datetime meta__item">
+<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2022-04-20T00:00:00Z>2022-04-20</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2 1 2h8v11H0V2z"/></svg><span class=meta__text><a class=meta__link href=/en/categories/aws-cdk-v2/ rel=category>AWS CDK v2</a>
+</span>
+</div>
+<div class="meta__item-translations meta__item">
+<span class=meta__text>Translations: <a class=meta__link href=/ja/tech/aws_cdk_v2/step_functions__lambda_task_with_context/>JA</a>
+</span>
+</div></div>
+</header>
+<div class="content list__excerpt post__content clearfix">
+Introduction When executing Lambda from StepFunctions with AWS CDK, it is useful to use LambdaInvoke, but I would like to note how to map the payload from the Input information. You can find it by searching for LambdaInvoke, but you need to be careful because it is different from AWSBatch&rsquo;s BatchSubmitJob. Version aws-cdk: 2.20.0 How to dynamically override Payload from Context or Input in LambdaInvoke It is recommended to use
+</div>
+</article><article class="list__item post">
+<header class=list__header>
+<h2 class="list__title post__title">
 <a href=/en/tech/typescript/create_google_drive_file_in_team_drive/ rel=bookmark>
 TypeScript: Create a file in any folder in GoogleDrive's TeamDrive
 </a>
@@ -210,14 +254,17 @@ Preparation It is assumed that the following settings have been completed.
 <a class="widget-taglist__link widget__link btn" href=/en/tags/aws-cdk-v2/ title="AWS CDK v2">AWS CDK v2</a>
 <a class="widget-taglist__link widget__link btn" href=/en/tags/awsbatch/ title=AWSBatch>AWSBatch</a>
 <a class="widget-taglist__link widget__link btn" href=/en/tags/awslambda/ title=AWSLambda>AWSLambda</a>
+<a class="widget-taglist__link widget__link btn" href=/en/tags/batchsubmitjob/ title=BatchSubmitJob>BatchSubmitJob</a>
 <a class="widget-taglist__link widget__link btn" href=/en/tags/cron/ title=cron>cron</a>
 <a class="widget-taglist__link widget__link btn" href=/en/tags/eventbridge/ title=EventBridge>EventBridge</a>
 <a class="widget-taglist__link widget__link btn" href=/en/tags/fargate_spot/ title=FARGATE_SPOT>FARGATE_SPOT</a>
 <a class="widget-taglist__link widget__link btn" href=/en/tags/google-drive/ title="Google Drive">Google Drive</a>
 <a class="widget-taglist__link widget__link btn" href=/en/tags/hugo/ title=Hugo>Hugo</a>
 <a class="widget-taglist__link widget__link btn" href=/en/tags/install-setting/ title="Install & Setting">Install & Setting</a>
+<a class="widget-taglist__link widget__link btn" href=/en/tags/lambdainvoke/ title=LambdaInvoke>LambdaInvoke</a>
 <a class="widget-taglist__link widget__link btn" href=/en/tags/mac/ title=Mac>Mac</a>
 <a class="widget-taglist__link widget__link btn" href=/en/tags/parameterstore/ title=ParameterStore>ParameterStore</a>
+<a class="widget-taglist__link widget__link btn" href=/en/tags/stepfunctions/ title=StepFunctions>StepFunctions</a>
 <a class="widget-taglist__link widget__link btn" href=/en/tags/systemmanager/ title=SystemManager>SystemManager</a>
 <a class="widget-taglist__link widget__link btn" href=/en/tags/team-drive/ title="Team Drive">Team Drive</a>
 <a class="widget-taglist__link widget__link btn" href=/en/tags/typescript/ title=TypeScript>TypeScript</a>
