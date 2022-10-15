@@ -1,0 +1,298 @@
+<!doctype html><html class=no-js lang=ja>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title>AWS CDK v2でLambda Function URLのEndpointにカスタムドメイン利用のCloudFrontを経由してアクセスする構成を作る - My First Step</title>
+<script>(function(a,b){a[b]=a[b].replace("no-js","js")})(document.documentElement,"className")</script>
+<meta name=description content>
+<meta property="og:title" content="AWS CDK v2でLambda Function URLのEndpointにカスタムドメイン利用のCloudFrontを経由してアクセスする構成を作る">
+<meta property="og:description" content="LambdaのFunction URLのEndpointにカスタムドメイン利用のCloudFrontを経由してアクセスする構成を作ります。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://blog.my-first-step.info/ja/tech/aws_cdk_v2/lambda_function_url_with_custom_domain_cloudfront/"><meta property="article:section" content="tech">
+<meta property="article:published_time" content="2022-10-15T00:00:00+00:00">
+<meta property="article:modified_time" content="2022-10-15T00:00:00+00:00"><meta property="og:site_name" content="My First Step">
+<meta itemprop=name content="AWS CDK v2でLambda Function URLのEndpointにカスタムドメイン利用のCloudFrontを経由してアクセスする構成を作る">
+<meta itemprop=description content="LambdaのFunction URLのEndpointにカスタムドメイン利用のCloudFrontを経由してアクセスする構成を作ります。"><meta itemprop=datePublished content="2022-10-15T00:00:00+00:00">
+<meta itemprop=dateModified content="2022-10-15T00:00:00+00:00">
+<meta itemprop=wordCount content="685">
+<meta itemprop=keywords content="AWS CDK V2,TypeScript,Lambda,CloudFront,Lambda Function URL,">
+<link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+<link rel=dns-prefetch href=//fonts.googleapis.com>
+<link rel=dns-prefetch href=//fonts.gstatic.com>
+<link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+<link rel=stylesheet href=/css/style.css>
+<link rel=stylesheet href=/css/my-style.css>
+<link rel="shortcut icon" href=/favicon.ico>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SV0KGCR6DC"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-SV0KGCR6DC',{anonymize_ip:!1})}</script>
+<script data-ad-client=ca-pub-9110784429846069 async src=https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js></script>
+</head>
+<body class=body>
+<div class="container container--outer">
+<header class=header>
+<div class="container header__container">
+<div class=logo>
+<a class=logo__link href=/ja/ title="My First Step" rel=home>
+<div class="logo__item logo__text">
+<div class=logo__title>My First Step</div>
+</div>
+</a>
+</div>
+<div class=divider></div>
+</div>
+</header>
+<div class="wrapper flex">
+<div class=primary>
+<main class=main role=main>
+<article class=post>
+<header class=post__header>
+<h1 class=post__title>AWS CDK v2でLambda Function URLのEndpointにカスタムドメイン利用のCloudFrontを経由してアクセスする構成を作る</h1>
+<div class="post__meta meta">
+<div class="meta__item-datetime meta__item">
+<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2022-10-15T00:00:00Z>2022-10-15</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2 1 2h8v11H0V2z"/></svg><span class=meta__text><a class=meta__link href=/ja/categories/aws-cdk-v2/ rel=category>AWS CDK v2</a>
+</span>
+</div>
+<div class="meta__item-translations meta__item">
+<span class=meta__text>翻訳: <a class=meta__link href=/en/tech/aws_cdk_v2/lambda_function_url_with_custom_domain_cloudfront/>EN</a>
+</span>
+</div></div>
+</header>
+<div class="post__toc toc">
+<div class=toc__title>目次</div>
+<div class=toc__menu>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#はじめに>はじめに</a>
+<ul>
+<li><a href=#ポイント>ポイント</a></li>
+<li><a href=#version>Version</a></li>
+</ul>
+</li>
+<li><a href=#書き方>書き方</a></li>
+<li><a href=#さいごに>さいごに</a></li>
+</ul>
+</nav>
+</div>
+</div><div class="content post__content clearfix">
+<h2 id=はじめに>はじめに</h2>
+<p>Lambda Function URL の Endpoint にカスタムドメイン利用の CloudFront を経由してアクセスする構成を作ります。
+似たような構成として</p>
+<ul>
+<li>Lambda + API Gateway</li>
+<li>Lambda@Edge</li>
+</ul>
+<p>というのもありますが、今回はこちらで作ってみます。</p>
+<h3 id=ポイント>ポイント</h3>
+<ul>
+<li>Lambda Function URL の Endpoint URL を自動で取得して CloudFront の Origin に設定する(やや面倒)。</li>
+<li>Lambda Function は DynamoDB にアクセスするだけの単純なものとします。</li>
+<li>カスタムドメインの新しい A レコードを作成して、その A レコードを CloudFront の Alias に設定します。
+<ul>
+<li>カスタムドメインは Route53 の Hosted Zone にあるとします。</li>
+<li>SSL 証明書も ACM で発行します。</li>
+</ul>
+</li>
+</ul>
+<h3 id=version>Version</h3>
+<ul>
+<li><code>aws-cdk</code>: <code>2.46.0</code></li>
+</ul>
+<h2 id=書き方>書き方</h2>
+<p>こんな感じで書きます。</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-typescript data-lang=typescript><span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>cdk</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib&#34;</span>;
+<span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Construct</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;constructs&#34;</span>;
+
+<span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>lambda</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib/aws-lambda&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>iam</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib/aws-iam&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>nodejs</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib/aws-lambda-nodejs&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>cloudfront</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib/aws-cloudfront&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>route53</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib/aws-route53&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>targets</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib/aws-route53-targets&#34;</span>;
+<span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>acm</span> <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#34;aws-cdk-lib/aws-certificatemanager&#34;</span>;
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>NAME</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;MyAwesomeResource&#34;</span>;
+
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>domainName</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;mydomain.example.com&#34;</span>;
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>cloudFrontHostName</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;my-awesome-resource.mydomain.example.com&#34;</span>;
+
+<span style=color:#66d9ef>export</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>ExternalMasterStack</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>cdk</span>.<span style=color:#a6e22e>Stack</span> {
+  <span style=color:#66d9ef>constructor</span>(<span style=color:#a6e22e>scope</span>: <span style=color:#66d9ef>Construct</span>, <span style=color:#a6e22e>id</span>: <span style=color:#66d9ef>string</span>, <span style=color:#a6e22e>props?</span>: <span style=color:#66d9ef>cdk.StackProps</span>) {
+    <span style=color:#66d9ef>super</span>(<span style=color:#a6e22e>scope</span>, <span style=color:#a6e22e>id</span>, <span style=color:#a6e22e>props</span>);
+
+    <span style=color:#66d9ef>const</span> { <span style=color:#a6e22e>functionUrl</span>, <span style=color:#a6e22e>lambdaFunction</span> } <span style=color:#f92672>=</span> <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>createLambdaFunction</span>();
+
+    <span style=color:#75715e>// get token for CloudFront Origin
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>lambdaHostName</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>cdk</span>.<span style=color:#a6e22e>Lazy</span>.<span style=color:#a6e22e>uncachedString</span>({
+      <span style=color:#a6e22e>produce</span><span style=color:#f92672>:</span> (<span style=color:#a6e22e>context</span>) <span style=color:#f92672>=&gt;</span> {
+        <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>resolved</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>context</span>.<span style=color:#a6e22e>resolve</span>(<span style=color:#a6e22e>functionUrl</span>.<span style=color:#a6e22e>url</span>);
+        <span style=color:#66d9ef>return</span> { <span style=color:#e6db74>&#34;Fn::Select&#34;</span><span style=color:#f92672>:</span> [<span style=color:#ae81ff>2</span>, { <span style=color:#e6db74>&#34;Fn::Split&#34;</span><span style=color:#f92672>:</span> [<span style=color:#e6db74>&#34;/&#34;</span>, <span style=color:#a6e22e>resolved</span>] }] } <span style=color:#66d9ef>as</span> <span style=color:#66d9ef>any</span>;
+      },
+    });
+
+    <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>createCloudFront</span>(<span style=color:#a6e22e>lambdaHostName</span>);
+  }
+
+  <span style=color:#75715e>// create lambda function
+</span><span style=color:#75715e></span>  <span style=color:#a6e22e>createLambdaFunction</span>()<span style=color:#f92672>:</span> {
+    <span style=color:#a6e22e>functionUrl</span>: <span style=color:#66d9ef>lambda.FunctionUrl</span>;
+    <span style=color:#a6e22e>lambdaFunction</span>: <span style=color:#66d9ef>lambda.Function</span>;
+  } {
+    <span style=color:#75715e>// NodejsFunction
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>lambdaFunction</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>nodejs</span>.<span style=color:#a6e22e>NodejsFunction</span>(<span style=color:#66d9ef>this</span>, <span style=color:#e6db74>`</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>NAME</span><span style=color:#e6db74>}</span><span style=color:#e6db74>Lambda`</span>, {
+      <span style=color:#a6e22e>functionName</span><span style=color:#f92672>:</span> <span style=color:#e6db74>`</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>NAME</span><span style=color:#e6db74>}</span><span style=color:#e6db74>-function`</span>,
+      <span style=color:#a6e22e>entry</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;src/lambda/index.ts&#34;</span>, <span style=color:#75715e>// lambda function source code
+</span><span style=color:#75715e></span>      <span style=color:#a6e22e>handler</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;handler&#34;</span>,
+      <span style=color:#a6e22e>memorySize</span>: <span style=color:#66d9ef>128</span>,
+      <span style=color:#a6e22e>bundling</span><span style=color:#f92672>:</span> {
+        <span style=color:#a6e22e>minify</span>: <span style=color:#66d9ef>true</span>,
+        <span style=color:#a6e22e>sourceMap</span>: <span style=color:#66d9ef>true</span>,
+        <span style=color:#a6e22e>target</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;es2020&#34;</span>,
+        <span style=color:#a6e22e>externalModules</span><span style=color:#f92672>:</span> [<span style=color:#e6db74>&#34;aws-sdk&#34;</span>],
+      },
+      <span style=color:#a6e22e>runtime</span>: <span style=color:#66d9ef>lambda.Runtime.NODEJS_16_X</span>,
+    });
+
+    <span style=color:#75715e>// add function url
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>functionUrl</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>lambdaFunction</span>.<span style=color:#a6e22e>addFunctionUrl</span>({
+      <span style=color:#a6e22e>authType</span>: <span style=color:#66d9ef>lambda.FunctionUrlAuthType.NONE</span>, <span style=color:#75715e>// no auth
+</span><span style=color:#75715e></span>      <span style=color:#a6e22e>cors</span><span style=color:#f92672>:</span> {
+        <span style=color:#a6e22e>allowedMethods</span><span style=color:#f92672>:</span> [<span style=color:#a6e22e>lambda</span>.<span style=color:#a6e22e>HttpMethod</span>.<span style=color:#a6e22e>GET</span>], <span style=color:#75715e>// only GET
+</span><span style=color:#75715e></span>        <span style=color:#a6e22e>allowedOrigins</span><span style=color:#f92672>:</span> [<span style=color:#e6db74>&#34;*&#34;</span>], <span style=color:#75715e>// allow all origins for CORS
+</span><span style=color:#75715e></span>      },
+    });
+
+    <span style=color:#75715e>// add tags for lambda function
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>cdk</span>.<span style=color:#a6e22e>Tags</span>.<span style=color:#66d9ef>of</span>(<span style=color:#a6e22e>lambdaFunction</span>).<span style=color:#a6e22e>add</span>(<span style=color:#e6db74>&#34;Name&#34;</span>, <span style=color:#e6db74>`</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>NAME</span><span style=color:#e6db74>}</span><span style=color:#e6db74>Lambda`</span>);
+    <span style=color:#a6e22e>cdk</span>.<span style=color:#a6e22e>Tags</span>.<span style=color:#66d9ef>of</span>(<span style=color:#a6e22e>lambdaFunction</span>).<span style=color:#a6e22e>add</span>(<span style=color:#e6db74>&#34;Project&#34;</span>, <span style=color:#a6e22e>NAME</span>);
+
+    <span style=color:#75715e>// allow lambda function to get dynamodb items in tables that start with &#34;my-awesome-resource.&#34;
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>lambdaFunction</span>.<span style=color:#a6e22e>addToRolePolicy</span>(
+      <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>iam</span>.<span style=color:#a6e22e>PolicyStatement</span>({
+        <span style=color:#a6e22e>effect</span>: <span style=color:#66d9ef>iam.Effect.ALLOW</span>,
+        <span style=color:#a6e22e>actions</span><span style=color:#f92672>:</span> [<span style=color:#e6db74>&#34;dynamodb:GetItem&#34;</span>],
+        <span style=color:#a6e22e>resources</span><span style=color:#f92672>:</span> [
+          <span style=color:#e6db74>`arn:aws:dynamodb:</span><span style=color:#e6db74>${</span><span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>region</span><span style=color:#e6db74>}</span><span style=color:#e6db74>:</span><span style=color:#e6db74>${</span><span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>account</span><span style=color:#e6db74>}</span><span style=color:#e6db74>:table/my-awesome-resource.*`</span>,
+        ],
+      })
+    );
+
+    <span style=color:#66d9ef>return</span> { <span style=color:#a6e22e>lambdaFunction</span>, <span style=color:#a6e22e>functionUrl</span> };
+  }
+
+  <span style=color:#a6e22e>createCloudFront</span>(<span style=color:#a6e22e>originHost</span>: <span style=color:#66d9ef>string</span>) {
+    <span style=color:#75715e>// Hosted Zone
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>hostedZoneId</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>route53</span>.<span style=color:#a6e22e>HostedZone</span>.<span style=color:#a6e22e>fromLookup</span>(<span style=color:#66d9ef>this</span>, <span style=color:#e6db74>&#34;hostedZoneId&#34;</span>, {
+      <span style=color:#a6e22e>domainName</span>: <span style=color:#66d9ef>domainName</span>,
+    });
+
+    <span style=color:#75715e>// SSL Certificate
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>certificateManagerCertificate</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>acm</span>.<span style=color:#a6e22e>DnsValidatedCertificate</span>(
+      <span style=color:#66d9ef>this</span>,
+      <span style=color:#e6db74>&#34;CertificateManagerCertificate&#34;</span>,
+      {
+        <span style=color:#a6e22e>domainName</span>: <span style=color:#66d9ef>cloudFrontHostName</span>,
+        <span style=color:#a6e22e>hostedZone</span>: <span style=color:#66d9ef>hostedZoneId</span>,
+        <span style=color:#a6e22e>region</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;us-east-1&#34;</span>,
+        <span style=color:#a6e22e>validation</span>: <span style=color:#66d9ef>acm.CertificateValidation.fromDns</span>(),
+      }
+    );
+
+    <span style=color:#75715e>// CloudFront
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>cloudFront</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>cloudfront</span>.<span style=color:#a6e22e>CloudFrontWebDistribution</span>(
+      <span style=color:#66d9ef>this</span>,
+      <span style=color:#e6db74>`</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>NAME</span><span style=color:#e6db74>}</span><span style=color:#e6db74>CloudFront`</span>,
+      {
+        <span style=color:#a6e22e>comment</span><span style=color:#f92672>:</span> <span style=color:#e6db74>`</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>NAME</span><span style=color:#e6db74>}</span><span style=color:#e6db74> CloudFront`</span>,
+        <span style=color:#a6e22e>originConfigs</span><span style=color:#f92672>:</span> [
+          {
+            <span style=color:#a6e22e>behaviors</span><span style=color:#f92672>:</span> [
+              {
+                <span style=color:#a6e22e>isDefaultBehavior</span>: <span style=color:#66d9ef>true</span>,
+                <span style=color:#a6e22e>allowedMethods</span>:
+                  <span style=color:#66d9ef>cloudfront.CloudFrontAllowedMethods.GET_HEAD_OPTIONS</span>, <span style=color:#75715e>// only GET HEAD OPTIONS
+</span><span style=color:#75715e></span>                <span style=color:#a6e22e>compress</span>: <span style=color:#66d9ef>true</span>,
+                <span style=color:#a6e22e>forwardedValues</span><span style=color:#f92672>:</span> {
+                  <span style=color:#a6e22e>queryString</span>: <span style=color:#66d9ef>true</span>, <span style=color:#75715e>// forward query string
+</span><span style=color:#75715e></span>                  <span style=color:#75715e>// no cookies
+</span><span style=color:#75715e></span>                  <span style=color:#a6e22e>cookies</span><span style=color:#f92672>:</span> {
+                    <span style=color:#a6e22e>forward</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;none&#34;</span>,
+                  },
+                },
+              },
+            ],
+            <span style=color:#75715e>// Lambda Function URL
+</span><span style=color:#75715e></span>            <span style=color:#a6e22e>customOriginSource</span><span style=color:#f92672>:</span> {
+              <span style=color:#a6e22e>domainName</span>: <span style=color:#66d9ef>originHost</span>,
+            },
+          },
+        ],
+        <span style=color:#75715e>// https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PriceClass.html
+</span><span style=color:#75715e></span>        <span style=color:#a6e22e>priceClass</span>: <span style=color:#66d9ef>cloudfront.PriceClass.PRICE_CLASS_200</span>, <span style=color:#75715e>// Price Class 200.
+</span><span style=color:#75715e></span>        <span style=color:#a6e22e>viewerCertificate</span>: <span style=color:#66d9ef>cloudfront.ViewerCertificate.fromAcmCertificate</span>(
+          <span style=color:#a6e22e>certificateManagerCertificate</span>,
+          {
+            <span style=color:#a6e22e>securityPolicy</span>: <span style=color:#66d9ef>cloudfront.SecurityPolicyProtocol.TLS_V1_2_2021</span>,
+            <span style=color:#a6e22e>aliases</span><span style=color:#f92672>:</span> [<span style=color:#a6e22e>cloudFrontHostName</span>],
+          }
+        ),
+      }
+    );
+    <span style=color:#75715e>// add tags to CloudFront
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>cdk</span>.<span style=color:#a6e22e>Tags</span>.<span style=color:#66d9ef>of</span>(<span style=color:#a6e22e>cloudFront</span>).<span style=color:#a6e22e>add</span>(<span style=color:#e6db74>&#34;Name&#34;</span>, <span style=color:#e6db74>`</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>NAME</span><span style=color:#e6db74>}</span><span style=color:#e6db74>CloudFront`</span>);
+    <span style=color:#a6e22e>cdk</span>.<span style=color:#a6e22e>Tags</span>.<span style=color:#66d9ef>of</span>(<span style=color:#a6e22e>cloudFront</span>).<span style=color:#a6e22e>add</span>(<span style=color:#e6db74>&#34;Project&#34;</span>, <span style=color:#a6e22e>NAME</span>);
+
+    <span style=color:#75715e>// Route53
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>route53</span>.<span style=color:#a6e22e>ARecord</span>(<span style=color:#66d9ef>this</span>, <span style=color:#e6db74>`</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>NAME</span><span style=color:#e6db74>}</span><span style=color:#e6db74>ARecord`</span>, {
+      <span style=color:#a6e22e>recordName</span>: <span style=color:#66d9ef>cloudFrontHostName</span>,
+      <span style=color:#a6e22e>zone</span>: <span style=color:#66d9ef>hostedZoneId</span>,
+      <span style=color:#a6e22e>target</span>: <span style=color:#66d9ef>route53.RecordTarget.fromAlias</span>(
+        <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>targets</span>.<span style=color:#a6e22e>CloudFrontTarget</span>(<span style=color:#a6e22e>cloudFront</span>)
+      ),
+    });
+  }
+}
+</code></pre></div><h2 id=さいごに>さいごに</h2>
+<p>Lambda@Edge があるのであまりこういう構成は必要ないかもしれませんが、
+部分的には参考になるコードもあると思うので、メモ代わりに残しておきます。</p>
+</div>
+<footer class=post__footer>
+<div class="post__tags tags clearfix"><svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5.0 11V3C0 1.5.8.8.8.8S1.5.0 3 0h8c1.5.0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 100-6 3 3 0 000 6z"/></svg>
+<ul class=tags__list>
+<li class=tags__item>
+<a class="tags__link btn" href=/ja/tags/aws-cdk-v2/ rel=tag>AWS CDK V2</a>
+</li>
+<li class=tags__item>
+<a class="tags__link btn" href=/ja/tags/typescript/ rel=tag>TypeScript</a>
+</li>
+<li class=tags__item>
+<a class="tags__link btn" href=/ja/tags/lambda/ rel=tag>Lambda</a>
+</li>
+<li class=tags__item>
+<a class="tags__link btn" href=/ja/tags/cloudfront/ rel=tag>CloudFront</a>
+</li>
+<li class=tags__item>
+<a class="tags__link btn" href=/ja/tags/lambda-function-url/ rel=tag>Lambda Function URL</a>
+</li>
+</ul>
+</div>
+</footer>
+</article>
+</main>
+</div>
+</div>
+<footer class=footer>
+<div class="container footer__container flex">
+<div class=footer__links>
+<a class=footer__link href=/ja/etc/my_first_step/>このBlogについて</a>
+</div>
+<div class=footer__copyright>
+&copy; 2022 Mokemokechicken.
+<span class=footer__copyright-credits>このサイトは <a href=https://gohugo.io/ rel="nofollow noopener" target=_blank>Hugo</a> と <a href=https://github.com/Vimux/Mainroad/ rel="nofollow noopener" target=_blank>Mainroad</a> テーマで生成されています。</span>
+</div>
+</div>
+</footer>
+</div>
+<script async defer src=/js/menu.js></script>
+</body>
+</html>
